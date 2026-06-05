@@ -108,3 +108,34 @@ The Phase 2 implementation provides the core algorithmic framework for future wo
 4. Integrate with real hardware-in-the-loop (HIL) data streams
 5. Add robustness checks for poor geometry scenarios
 6. Implement adaptive grid refinement based on posterior uncertainty
+
+### CRLB timestamp sensitivity diagnostic
+
+The CRLB sensitivity diagnostic (`scripts/diagnose_crlb_sensitivity.py`) quantifies how timestamp noise (σ_τ) propagates to position error bounds under fixed frequency noise (σ_f = 1.0 Hz). The diagnostic uses a 400 km circular equatorial orbit with 20 packets over 600 s and a ground station at 40.0°N, 105.0°W.
+
+**Diagnostic results:**
+
+| σ_τ (s) | range noise (km) | CRLB RMSE (m) | finite |
+|---------|-----------------|---------------|--------|
+| 1×10⁻³  | 299.8           | 413 565       | Yes    |
+| 1×10⁻⁴  | 30.0            | 85 930        | Yes    |
+| 1×10⁻⁵  | 3.0             | 13 540        | Yes    |
+| 1×10⁻⁶  | 0.3             | 6 140         | Yes    |
+
+Observations:
+
+1. **Millisecond timestamping is too weak.** At σ_τ = 1 ms the implied range noise is ~300 km, which overwhelms the weak position sensitivity of propagation delay. The CRLB RMSE exceeds 400 km, confirming that millisecond-precision timestamps carry negligible geometric information for this estimator.
+
+2. **Microsecond-level timestamping remains km-scale.** Even at σ_τ = 1 µs (range noise ~0.3 km), the CRLB RMSE is ~6 km. The ground-track geometry of a LEO pass at 400 km altitude limits the horizontal position information available from propagation delay alone; the horizontal dilution is substantial until the satellite rises to high elevation.
+
+3. **MAP error is not comparable to classical CRLB.** The smoke-test MAP single-run error around 100 m reflects the Bayesian MAP estimator operating with priors on b₀, b₁, and Δt, plus grid discretization that regularizes the solution. The classical CRLB assumes an unbiased estimator with no priors. These two quantities are not directly comparable — the MAP estimator benefits from regularization that the CRLB does not account for.
+
+4. **No paper performance claim is made from this diagnostic.** The diagnostic is a sensitivity sweep of a theoretical bound under simplified geometry. It establishes that timestamp precision matters and identifies the order of magnitude, but does not support an accuracy claim.
+
+5. **Future validation should compare four quantities.** Before any paper claim:
+   - Classical nuisance-marginalized CRLB (unbiased, no priors)
+   - Prior-regularized / Bayesian FIM approximation (accounting for b₀, b₁, Δt priors)
+   - Grid posterior covariance (numerical second moments of the discrete posterior)
+   - Monte Carlo MAP error (100+ trials with randomized noise realizations)
+
+These four should agree within Monte Carlo variance for the estimator to be well-characterized. Divergences indicate either prior misspecification or incorrect CRLB formulation.
