@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.DS_Store
+
+# Large generated artifacts
+data/iq_seeds/*
+data/synthetic/*
+experiments/results/*
+
+# keep folders
+!data/iq_seeds/.gitkeep
+!data/synthetic/.gitkeep
+!experiments/results/.gitkeep
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.synctex.gz

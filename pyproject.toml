@@ -1,0 +1,18 @@
+[project]
+name = "LEO-DTF"
+version = "0.1.0"
+description = "LEO Doppler-Time Fingerprint for coarse localization and uplink state estimation"
+authors = [
+    {name = "Hermes Agent", email = "hermes@example.com"}
+]
+dependencies = [
+    "numpy",
+    "torch",
+    "sgp4",
+    "scipy",
+    "matplotlib",
+    "pyyaml",
+]
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
