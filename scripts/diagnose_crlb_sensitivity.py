@@ -144,7 +144,7 @@ def main():
     # Check if sigma_tau=1ms is an outlier
     if results[0]['finite'] and results[0]['rmse_bound_m'] > 1e5:
         print(f"! sigma_tau=1ms gives RMSE > 100 km: timestamp information is negligible")
-        print("  At sigma_tau=1ms, range noise = {results[0]['range_noise_km']:.0f} km")
+        print(f"  At sigma_tau=1ms, range noise = {results[0]['range_noise_km']:.0f} km")
         print("  This overwhelms the weak position sensitivity of propagation delay.")
     
     print()
