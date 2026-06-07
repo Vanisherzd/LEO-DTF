@@ -1,0 +1,63 @@
+\section{Limitations}\label{sec:limitations}
+
+\begin{enumerate}
+  \item \textbf{Bounded ROI required.}  LEO-DTF assumes the terminal location
+        is approximately known to lie within a predefined region of interest.
+        If the true position lies outside the grid, the estimator will return
+        the nearest grid cell and no alarm is raised.  Adaptive or hierarchical
+        grid strategies are left to future work.
+
+  \item \textbf{Not a GNSS replacement.}  The method provides coarse
+        localization and uplink state estimation only.  Centimeter-level or
+        meter-level accuracy is not claimed and is not achievable with the
+        current approach.
+
+  \item \textbf{Not meter-level localization.}  CRLB analysis shows that
+        sub-kilometer localization accuracy requires timestamp precision of
+        $\lesssim 10$ $\mu$s (corresponding to $\lesssim 3$ km range noise), which
+        is challenging for low-cost IoT hardware.  The current work targets
+        ROI-reduction rather than precise geolocation.
+
+  \item \textbf{No real satellite OTA validation.}  All evaluations to date
+        use synthetic passes.  The trace-driven HIL plan describes a path to
+        hardware validation but is not yet executed.  No claims of
+        over-the-air performance are made or implied by the current repository
+        state.
+
+  \item \textbf{Pass geometry sensitivity.}  Estimation accuracy depends on
+        the satellite elevation trajectory.  Short passes at low maximum
+        elevation and nearly overhead passes with symmetric geometry provide
+        weaker horizontal position information.  The CRLB sensitivity diagnostic
+        characterizes this quantitatively.
+
+  \item \textbf{Oscillator quality sensitivity.}  Large CFO and drift increase
+        the correlation between nuisance parameters and position, degrading
+        the posterior peak.  The estimator's prior regularization on $b_0$ and
+        $b_1$ mitigates this to some extent but cannot fully compensate for
+        very poor oscillator stability.
+
+  \item \textbf{Delay observation availability.}  Packet arrival timestamps
+        may not be reliably extracted from low-cost LR-FHSS or LoRa receivers.
+        If delay observations are absent, the estimator relies solely on
+        Doppler, increasing the CRLB and reducing accuracy.  Current LoRa and
+        LR-FHSS feature extractors are stubs (see
+        Sections~\ref{sec:hil} and~\ref{sec:evaluation}).
+
+  \item \textbf{Grid resolution and computation.}  The grid estimator scales as
+        $O(G \cdot D \cdot N)$, where $G$ is the number of position grid
+        points, $D$ the number of time-offset grid points, and $N$ the number
+        of observations.  Finer grids increase accuracy at increased
+        computational cost.  Hierarchical or multi-resolution approaches are
+        not yet implemented.
+
+  \item \textbf{HIL is trace-driven, not operational satellite validation.}
+        The HIL plan describes offline injection of Doppler/CFO/delay into IQ
+        captures; it does not involve real satellite links.  Validating the
+        full signal-processing pipeline from real captures remains future work.
+
+  \item \textbf{LoRa / LR-FHSS feature extractors are stubs.}
+        \texttt{src/leodtf/feature\_extract\_lora.py} and
+        \texttt{src/leodtf/feature\_extract\_lrfhss.py} are placeholders.  Real
+        extraction algorithms for packet timing and frequency from LoRa and
+        LR-FHSS waveforms are left to future HIL implementation.
+\end{enumerate}

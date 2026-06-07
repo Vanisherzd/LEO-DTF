@@ -1,0 +1,25 @@
+\section{Conclusion}\label{sec:conclusion}
+
+This paper has presented LEO-DTF: a model-driven framework for coarse
+localization and uplink state estimation of direct-to-satellite IoT devices
+using the Doppler-time fingerprint induced by LEO satellite motion.
+By combining TLE-based orbit geometry (SGP4), a Doppler/range-rate observation
+model, and a nuisance-aware Bayesian grid posterior estimator, the method
+simultaneously infers the terminal's coarse position, time offset, CFO, and
+oscillator drift from multi-observation pass data.
+
+The current repository establishes: (i) the core algorithmic pipeline from
+satellite geometry to posterior estimate; (ii) a reproducible synthetic-pass
+evaluation framework with Monte Carlo diagnostics and CRLB sensitivity analysis;
+and (iii) a trace-driven HIL validation plan describing the path from software
+simulation to hardware-in-the-loop verification without over-the-air claims.
+
+The paper skeleton in this repository is a working draft.  All quantitative
+results are currently preliminary and synthetic.  Meter-level accuracy,
+real-satellite OTA validation, and operational deployment are explicitly
+outside the current scope and are not claimed.
+
+Future work includes completing the IQ Doppler injection and feature-extraction
+pipeline, executing the HIL validation, expanding the Monte Carlo evaluation
+with 100+ trials across diverse pass geometries, and integrating the estimator
+output with NTN uplink scheduling and link adaptation subsystems.

@@ -1,0 +1,26 @@
+\begin{abstract}
+Direct-to-satellite (D2S) IoT devices often operate under severely constrained
+knowledge of timing, frequency, and location.  Low-cost oscillators and sparse
+satellite visibility make reliable uplink state estimation challenging, yet
+coarse knowledge of device position and timing offset can substantially improve
+uplink scheduling and link-budget management in non-terrestrial network (NTN)
+scenarios.
+
+This paper presents LEO-DTF: a Doppler-Time Fingerprint approach that exploits
+the structured Doppler dynamics induced by low-earth-orbit (LEO) satellite
+motion.  Using a two-line element (TLE) set and the SGP4 propagator, LEO-DTF
+computes the expected range-rate and Doppler curve for any candidate position
+inside a bounded region of interest (ROI).  A Bayesian grid-based posterior
+estimator jointly accounts for unknown carrier frequency offset (CFO), oscillator
+drift, and timing offset as nuisance parameters, yielding a maximum \emph{a posteriori}
+(MAP) coarse location estimate together with uplink state quantities.
+
+Evaluation is currently conducted in simulation using a reproducible synthetic-pass
+pipeline and Monte Carlo diagnostics.  A trace-driven hardware-in-the-loop (HIL)
+validation plan is described using an LR1121/STM32 packet source and a USRP B210
+IQ capture front-end.  No real satellite over-the-air validation is claimed.
+Meter-level localization accuracy and GNSS replacement are explicitly outside the
+scope of the current work.  Rather than replacing GNSS, LEO-DTF is intended as a
+complementary coarse localization and uplink state-estimation primitive for
+bounded-region D2S IoT scenarios.
+\end{abstract}

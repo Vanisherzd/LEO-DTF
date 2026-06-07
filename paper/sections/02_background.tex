@@ -1,0 +1,61 @@
+\section{Background and Motivation}\label{sec:background}
+
+\subsection{Direct-to-Satellite IoT and NTN Context}
+Non-terrestrial network (NTN) architectures using LEO constellations extend
+coverage to remote and maritime IoT deployments
+\cite{todo_ntn_iot}.  Devices communicating directly with LEO satellites
+face unique上行链路 challenges: long propagation delay (order 1--10~ms),
+significant Doppler shift (up to several kHz at L-band), and limited
+terminal transmit power.  Location knowledge at the network side can improve
+uplink scheduling, beam management, and power control, yet low-cost IoT
+modules lack GNSS receivers or accurate time synchronization.
+
+\subsection{LEO Doppler Dynamics}
+A LEO satellite at altitude $h \approx 400$--1200~km moves at approximately
+7.5~km/s.  The line-of-sight (LOS) range rate $\dot{\rho}(t)$ between a
+ground terminal and the satellite varies from approximately
+$-7.5\cos(E)$ to $+7.5\cos(E)$~km/s, where $E$ is the elevation angle.
+At a carrier frequency of 1.6~GHz this produces Doppler shifts of order
+$\pm 40$~kHz---well above the frequency estimation errors typical of
+low-cost oscillators.
+
+\subsection{Course Localization Utility}
+Centimeter- or decimeter-level GNSS-grade accuracy is not required for many
+NTN IoT use cases.  Bounding a device's position to a 100~m--10~km region of
+interest (ROI) is sufficient to:
+\begin{itemize}
+  \item narrow beam pointing regions for satellite phased-array antennas,
+  \item improve uplink timing and frequency acquisition,
+  \item support anti-spoofing by detecting implausible Doppler-time signatures.
+\end{itemize}
+This paper targets \emph{coarse localization} within a pre-bounded ROI, not
+GNSS replacement.
+
+\subsection{Why Doppler Alone is Ambiguous}
+Doppler at a single time instant depends on range-rate, which is primarily
+sensitive to the radial (line-of-sight) component of terminal position.
+Horizontal position components are weakly observable unless the Doppler
+trajectory is tracked over an extended pass \cite{todo_doppler_localization}.
+Furthermore, an unknown CFO $b_0$ and drift $b_1$ shift and tilt the
+observed frequency curve, coupling oscillator state with geometry.
+The \emph{shape} of the Doppler-time curve across multiple observations
+provides stronger discriminative power than any single measurement, which
+motivates the fingerprint approach in Section~\ref{sec:dtf}.
+
+\subsection{Bounded ROI Assumption}
+Many practical D2S IoT deployments operate in known coverage zones: a farm,
+a port, an industrial site, or a known city district.  Assuming a bounded ROI
+of order $10 \times 10$~km is therefore reasonable and is explicitly stated
+as a precondition of the method.
+
+\subsection{Nuisance Parameter Challenges}
+Low-cost crystals exhibit CFO of tens to hundreds of Hz and drift rates of
+order $10^{-2}$--$10^{-1}$~Hz/s.  These must be estimated jointly with
+position; treating them as fixed biases would degrade localization accuracy
+significantly.
+
+% Placeholder citations
+% TODO: fill with real references
+%\cite{todo_ntn_iot}  -- 3GPP NTN IoT study
+%\cite{todo_sgp4}     -- Vallado SGP4 propagator
+%\cite{todo_doppler_localization} -- prior LEO Doppler localization work

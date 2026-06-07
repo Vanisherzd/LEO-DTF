@@ -1,0 +1,74 @@
+\section{Evaluation Plan}\label{sec:evaluation}
+
+All evaluations to date are \textbf{synthetic and trace-driven}.
+No real satellite OTA data is used.  Results are reproducible by running the
+scripts listed below.
+
+\subsection{Implemented Experiments}
+
+\begin{table}[h]
+  \caption{Evaluation Experiments}
+  \label{tab:experiments}
+  \centering
+  \begin{tabular}{p{2.2cm}p{2.8cm}p{2.8cm}p{1.6cm}}{l}
+    \hline
+    \textbf{Experiment} & \textbf{Script} & \textbf{Output} & \textbf{Status} \\ \hline
+    Smoke test &
+      \texttt{run\_smoke\_test.py} &
+      Doppler range, CRLB area, MAP error &
+      Implemented \\ \hline
+    Synthetic dataset &
+      \texttt{generate\_synthetic\_dataset.py} &
+      \texttt{experiments/results/synthetic\_pass\_dataset.json}, &
+      Implemented \\ &
+      &  CSV observations &  \\ \hline
+    Monte Carlo (synthetic) &
+      \texttt{run\_monte\_carlo\_synthetic.py} &
+      Per-trial CSV with MAP error, entropy, HPD cells &
+      Implemented, preliminary \\ \hline
+    CRLB sensitivity &
+      \texttt{diagnose\_crlb\_sensitivity.py} &
+      CRLB RMSE vs.\ $\sigma_\tau$ sweep &
+      Implemented, preliminary \\ \hline
+    Synthetic pass grid estimator &
+      \texttt{run\_smoke\_test.py} (Phase 2) &
+      Posterior heatmap, MAP location, HPD region &
+      Implemented \\ \hline
+    Unit tests &
+      \texttt{pytest tests/} &
+      Pass/fail for all tests &
+      Implemented \\ \hline
+    HIL validation &
+      \texttt{src/leodtf/iq\_doppler\_injector.py} &
+      --- &
+      Planned \\ \hline
+    Real IQ capture pipeline &
+      \texttt{src/leodtf/feature\_extract\_lora.py},
+      \texttt{feature\_extract\_lrfhss.py} &
+      --- &
+      Planned \\ \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Preliminary Synthetic Results (do not constitute paper performance claims)}
+
+The smoke test (20 packets, 600~s synthetic pass, 400~km equatorial orbit,
+$\sigma_f=1$ Hz, $\sigma_\tau=1$ ms) produces:
+\begin{itemize}
+  \item Doppler range: $\approx -3115$ to $-2916$ Hz.
+  \item CRLB RMSE lower bound: $\approx 48$ km (weak due to millisecond timestamp noise).
+  \item Single-run MAP error: $\approx 136$ m (synthetic realization only).
+\end{itemize}
+These numbers are diagnostics for code correctness and algorithm behavior; they
+are not claimed as achievable accuracy and should not be cited as such.
+
+\subsection{Required Validation before Paper Claims}
+The following are required before any localization accuracy claim in a
+publication:
+\begin{enumerate}
+  \item 100+ Monte Carlo trials with randomized noise and independent geometry.
+  \item Reported mean and confidence intervals for localization error.
+  \item Comparison of achieved RMSE against CRLB bounds.
+  \item Sensitivity analysis across elevation angle, pass duration, and SNR.
+  \item HIL run with extracted observations from real IQ captures.
+\end{enumerate}

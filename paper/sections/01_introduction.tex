@@ -1,0 +1,47 @@
+\section{Introduction}
+
+Direct-to-satellite IoT (D2S IoT) is emerging as a key connectivity paradigm for
+low-power wide-area devices in areas lacking terrestrial infrastructure
+\cite{todo_ntn_iot}.  Unlike conventional cellular or GNSS-assisted positioning,
+a D2S terminal must operate with minimal prior knowledge of its own state: its
+position, timing reference, and oscillator quality are all uncertain.  This
+uncertainty complicates uplink scheduling, link adaptation, and any downstream
+location-aware services.
+
+A LEO satellite's high relative velocity with respect to a ground terminal
+produces strong and structured Doppler dynamics.  The Doppler shift varies
+predictably with geometry: as the satellite approaches, the observed carrier
+frequency rises above the nominal value; as it recedes, it falls below.  This
+temporal Doppler curve---the \emph{Doppler-time fingerprint}---is not merely an
+impairment; it carries geometric information about the terminal's location
+relative to the satellite ground track.
+
+Estimating position from this fingerprint is challenging because the terminal's
+low-quality oscillator introduces an unknown carrier frequency offset (CFO) and
+drift, the terminal timing reference is offset from true UTC, and observations
+are corrupted by noise.  These nuisance parameters are tightly coupled with
+position in the observed frequency data, and single-time observations provide
+insufficient geometric strength.
+
+This paper makes the following contributions:
+
+\begin{itemize}
+  \item A Doppler-time fingerprint formulation that treats the full pass
+        observation sequence as a geometric signature, explicitly separating
+        it from oscillator nuisances.
+  \item A nuisance-aware Bayesian grid posterior estimator that jointly
+        infers coarse position, time offset, CFO, and drift over a bounded
+        region of interest (ROI).
+  \item A reproducible synthetic-pass and Monte Carlo evaluation pipeline
+        that produces posterior heatmaps, error statistics, and CRLB
+        sensitivity diagnostics without requiring satellite over-the-air
+        data.
+  \item A trace-driven hardware-in-the-loop (HIL) validation plan using an
+        LR1121/STM32 packet source and a USRP B210 capture front-end,
+        enabling validation of the signal-processing and observation-extraction
+        pipeline in a lab setting without OTA claims.
+\end{itemize}
+
+No reinforcement-learning, PGRL, or semantic-communication framework is used.
+All results are model-driven and reproducible from the provided scripts.
+\end{section}

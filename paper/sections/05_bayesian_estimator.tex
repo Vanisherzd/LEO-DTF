@@ -1,0 +1,57 @@
+\section{Bayesian Grid Posterior Estimator}\label{sec:estimator}
+
+\subsection{Candidate Grid}
+The estimator operates over a discrete grid $\mathcal{G} = \{\mathbf{x}_k\}$
+covering the bounded ROI.  The grid resolution $\Delta_g$ (meters) trades off
+computational cost against quantization error.  A finer grid can be used in a
+second pass around the MAP estimate for refinement.
+
+\subsection{Joint State}
+For each candidate $\mathbf{x}_k$ the estimator considers nuisance parameters
+$\Delta t$, $b_0$, $b_1$.  The joint negative log-score (up to an additive
+constant) is
+\begin{equation}
+  S(\mathbf{x}_k, \Delta t, b_0, b_1) =
+  \frac{1}{2\sigma_f^2}\sum_i \bigl[y_f(t_i) - f_D(t_i;\mathbf{x}_k) - b_0 - b_1 t_i\bigr]^2
+  + \frac{1}{2\sigma_\tau^2}\sum_i \bigl[y_\tau(t_i) - t_i - \Delta t - \rho(t_i;\mathbf{x}_k)/c\bigr]^2 .
+  \label{eq:joint_score}
+\end{equation}
+
+\subsection{Nuisance Parameter Fitting}
+For fixed $\mathbf{x}_k$ and $\Delta t$, the terms $b_0$ and $b_1$ appear
+linearly in the frequency residual.  They admit a closed-form weighted
+least-squares solution:
+\begin{equation}
+  \begin{bmatrix} \hat{b}_0 \\ \hat{b}_1 \end{bmatrix}
+  = \arg\min_{b_0,b_1}
+    \Bigl\| \mathbf{A}\begin{bmatrix}b_0\\b_1\end{bmatrix}
+    - (\mathbf{y}_f - \mathbf{f}_D) \Bigr\|_{\mathbf{W}}^2,
+\end{equation}
+where $\mathbf{A} = [1, \mathbf{t}]$ and $\mathbf{W} = \operatorname{diag}(1/\sigma_f^2)$.
+Weak Gaussian priors on $b_0$, $b_1$, and $\Delta t$ are included as virtual
+observations to regularize the fit.
+
+\subsection{Grid Score and Posterior}
+After integrating out $b_0$ and $b_1$, the position-only score is
+\begin{equation}
+  S_k(\Delta t) = S(\mathbf{x}_k, \Delta t, \hat{b}_0, \hat{b}_1),
+\end{equation}
+and the unnormalized posterior is $p_k \propto \exp(-\min_{\Delta t} S_k(\Delta t))$.
+The full posterior over the grid is normalized:
+\begin{equation}
+  \Pr(\mathbf{x}_k \mid \mathbf{y}) = \frac{p_k}{\sum_{j} p_j}.
+\end{equation}
+
+\subsection{MAP Estimate and Credible Region}
+The maximum \emph{a posteriori} (MAP) estimate is
+$\hat{\mathbf{x}} = \arg\max_{\mathbf{x}_k} \Pr(\mathbf{x}_k \mid \mathbf{y})$.
+The highest posterior density (HPD) region at mass level $1-\alpha$ contains the
+smallest set of grid cells whose total posterior mass exceeds $1-\alpha$.
+The \emph{ambiguity score} is the weighted RMS distance between significant
+posterior modes, measuring estimator confidence.
+
+\subsection{Implementation}
+The estimator is implemented in \texttt{src/leodtf/estimator\_grid\_map.py}.
+Grid search over $|\mathcal{G}| \times N_{\Delta t}$ candidates is embarrassingly
+parallel and scales as $O(|\mathcal{G}| N_{\Delta t} N_{\text{obs}})$.
+Marginalization over $\Delta t$ uses log-sum-exp for numerical stability.

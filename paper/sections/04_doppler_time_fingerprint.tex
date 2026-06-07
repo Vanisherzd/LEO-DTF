@@ -1,0 +1,55 @@
+\section{Doppler-Time Fingerprint}\label{sec:dtf}
+
+\subsection{Fingerprint as a Geometric Signature}
+The Doppler-time fingerprint is the functional relationship
+$f_D(t; \mathbf{x})$ induced by a candidate position $\mathbf{x}$ over the
+duration of a satellite pass.  Because the range-rate $\dot{\rho}(t; \mathbf{x})$
+is geometry-dependent, two distinct positions inside the ROI generally produce
+different Doppler trajectories.  The \emph{shape} of this trajectory across the
+pass---its curvature, peak value, and zero-crossing time---constitutes a
+position-dependent fingerprint.
+
+\subsection{Sensitivity to Nuisance Parameters}
+The observed frequency $y_f(t_i)$ adds to $f_D$ a vertical offset $b_0$, a linear
+tilt $b_1 t_i$, and noise $\epsilon_i$.  The timing offset $\Delta t$ shifts the
+propagation delay and indirectly affects the Doppler curve through $\rho(t)$.
+These four nuisance terms must be separated from the geometric component to
+recover position information.
+
+\begin{itemize}
+  \item $b_0$: shifts the entire frequency curve vertically.
+  \item $b_1$: tilts the curve; positive drift makes later observations
+        systematically higher.
+  \item $\Delta t$: shifts the delay observation; has secondary effect on
+        Doppler through the range at each time.
+\end{itemize}
+
+The estimator handles these by joint optimization over position and nuisance
+parameters (Section~\ref{sec:estimator}).
+
+\subsection{Discriminative Power of Multi-Time Observations}
+A single snapshot observation provides at most one constraint (range-rate) on
+two unknown position coordinates, making the problem underdetermined.  Tracking
+the Doppler curve over a 5--10 minute pass samples the geometry at multiple
+elevation angles, substantially increasing the position information content.
+This motivates the grid-search approach rather than a closed-form solution.
+
+\subsection{Conceptual Figure}
+\begin{figure}[htbp]
+  \centering
+  \fbox{\parbox{0.9\linewidth}{
+    \centering
+    Placeholder for Doppler-time fingerprint concept figure.
+
+    Expected content: \\
+    (a) Satellite ground track and three candidate ROI positions \\
+    (b) Corresponding Doppler-time curves showing differentiation \\
+    (c) Effect of CFO/drift on the observed frequency curve
+  }}
+  \caption{Doppler-time fingerprint concept.}
+  \label{fig:dtf_concept}
+\end{figure}
+
+Figure~\ref{fig:dtf_concept} illustrates how different candidate positions
+produce measurably different Doppler curves, and how CFO/drift shift the
+observed curve relative to the clean geometric fingerprint.

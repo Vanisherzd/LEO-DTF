@@ -1,0 +1,80 @@
+\section{Trace-driven HIL Validation Plan}\label{sec:hil}
+
+\subsection{Objectives}
+The HIL plan validates the observation extraction and state estimation pipeline
+in a laboratory setting without requiring live satellite passes.  It is designed
+to demonstrate that Doppler-time features can be extracted from real
+off-the-shelf D2S hardware and processed through the LEO-DTF estimator.
+
+\textbf{No real satellite over-the-air validation is claimed in the current
+repository state.}
+
+\subsection{Hardware Roles}
+
+\begin{itemize}
+  \item \textbf{LR1121/STM32 packet source}: The Semtech LR1121 transceiver is
+        configured in transmit-only mode (LR-FHSS or LoRa) using an STM32
+        host microcontroller.  The LR1121 does \emph{not} receive; it serves
+        solely as a characterizable packet waveform source with known timing.
+  \item \textbf{USRP B210}: A Software-Defined Radio (SDR) front-end captures
+        complex baseband IQ samples at a configurable sample rate
+        (recommended 1--10~MS/s).  The USRP acts as a wideband receiver to
+        capture the transmitted packets.
+  \item \textbf{Offline processing host}: IQ samples are stored to disk and
+        processed offline.  No real-time processing is required.
+\end{itemize}
+
+\subsection{Signal Flow and Injection}
+Doppler shift, CFO, drift, and propagation delay are injected \emph{offline}
+into the captured IQ samples to simulate arbitrary satellite geometries and
+oscillator conditions.  This trace-driven approach enables reproducible
+experiments across different pass geometries without physical satellite
+visibility.
+
+The offline injector (\texttt{src/leodtf/iq\_doppler\_injector.py}) is currently
+a placeholder; the HIL plan defines the intended signal model but the
+implementation is left to future work.
+
+\subsection{Validation Scope}
+The HIL validates:
+\begin{itemize}
+  \item Packet detection and timing extraction from IQ samples.
+  \item CFO and drift estimation from frequency domain analysis.
+  \item End-to-end pipeline: IQ $\rightarrow$ extracted observations
+        $\rightarrow$ posterior heatmap.
+\end{itemize}
+The HIL does \emph{not} validate:
+\begin{itemize}
+  \item Real satellite Doppler extraction.
+  \item Outdoor antenna and RF path effects.
+  \item Real-world timing synchronization quality.
+\end{itemize}
+
+\subsection{Required Artifacts}
+The following outputs shall be produced for each HIL run and stored under
+\texttt{data/hil\_runs/} with a datestamp:
+\begin{enumerate}
+  \item \texttt{capture\_IQ\_\{run\_id\}.sigmf-data} and
+        \texttt{capture\_IQ\_\{run\_id\}.sigmf-meta} --- raw IQ recording.
+  \item \texttt{metadata.json} --- run parameters (Tx frequency, sample rate,
+        capture duration, injected Doppler, CFO, delay, SNR).
+  \item \texttt{extracted\_observations.csv} --- extracted frequency and
+        timestamp observations per packet.
+  \item \texttt{posterior\_result.json} --- grid posterior, MAP estimate,
+        HPD region, ambiguity score.
+  \item \texttt{analysis.ipynb} or \texttt{analysis.py} --- notebook or script
+        reproducing the posterior from the extracted observations.
+\end{enumerate}
+
+\subsection{Minimal Experiment Checklist}
+Before claiming HIL validation the following must hold:
+\begin{itemize}
+  \setlength\itemsep{0em}
+  \item $\ge 3$ independent IQ captures with different injected geometries.
+  \item MAP estimate falls within the 95\% HPD region of the true injected
+        position in all runs.
+  \item Posterior entropy decreases monotonically with increasing observation
+        SNR in synthetic baseline runs.
+  \item Analysis script reproduces the posterior heatmap from
+        \texttt{extracted\_observations.csv} without manual intervention.
+\end{itemize}
