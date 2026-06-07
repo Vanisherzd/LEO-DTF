@@ -7,6 +7,8 @@ If SGP4 is not available, provides a synthetic circular orbit for testing.
 import numpy as np
 from datetime import datetime
 
+from . import frame_transform
+
 try:
     from sgp4.api import Satrec, jday
     HAS_SGP4 = True
@@ -118,14 +120,15 @@ def propagate_orbit(tle_line1, tle_line2, times):
             minute = t.minute
             second = t.second + t.microsecond * 1e-6  # fractional seconds
 
-            # Propagate using SGP4 (returns TEME position and velocity)
-            e, r, v = satellite.sgp4(year, month, day, hour, minute, second)
-            if e != 0:
-                raise ValueError(f"SGP4 error: {e} at time {t}")
-
-            # Compute Julian date for the time (needed for TEME to ECEF conversion)
+            # Compute Julian date (needed for TEME-to-ECEF conversion)
             jd, fr = jday(year, month, day, hour, minute, second)
             jd_utc = jd + fr
+
+            # Propagate using SGP4 (returns TEME position and velocity)
+            # New API: sgp4(jd, fr) — Julian date as (integer, fraction)
+            e, r, v = satellite.sgp4(jd, fr)
+            if e != 0:
+                raise RuntimeError(f"SGP4 propagation error {e} at time {t}")
 
             # Convert TEME to ECEF
             r_ecef, v_ecef = frame_transform.teme_to_ecef(r, v, jd_utc)
