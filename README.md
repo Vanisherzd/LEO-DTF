@@ -21,7 +21,18 @@ time offset within a bounded region of interest (ROI).
   state estimation.  This is not PGRL, reinforcement learning, or semantic
   communication.
 
-## Directory Structure
+### Hardware / HIL Documentation
+
+| Document | Purpose |
+|----------|---------|
+| `docs/hardware/rf_safety_checklist.md` | RF safety and no-transmit checklist |
+| `docs/hardware/usrp_b210_capture_protocol.md` | USRP B210 capture metadata and post-capture analysis |
+| `docs/hardware/lr1121_stm32_packet_source.md` | LR1121/STM32 configuration and logging |
+| `docs/hardware/trace_driven_validation_checklist.md` | Per-run validation checklist |
+
+> **All HIL documents describe planned or trace-driven work. No real satellite OTA validation is claimed in this repository.**
+
+## Project Structure
 
 - `src/leodtf`: Core implementation (TLE loading, orbit propagation,
   observation model, estimator, metrics, synthetic dataset generator)

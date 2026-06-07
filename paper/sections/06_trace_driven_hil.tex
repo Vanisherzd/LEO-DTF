@@ -78,3 +78,17 @@ Before claiming HIL validation the following must hold:
   \item Analysis script reproduces the posterior heatmap from
         \texttt{extracted\_observations.csv} without manual intervention.
 \end{itemize}
+
+Engineering details for the hardware setup, RF safety, SDR capture protocol,
+and LR1121/STM32 packet source configuration are maintained in
+\texttt{docs/hardware/}.  The design documents are:
+\begin{itemize}
+  \item \texttt{docs/hardware/rf\_safety\_checklist.md} --- RF safety and
+        no-transmit checklist.
+  \item \texttt{docs/hardware/usrp\_b210\_capture\_protocol.md} --- USRP B210
+        capture metadata requirements and post-capture analysis flow.
+  \item \texttt{docs/hardware/lr1121\_stm32\_packet\_source.md} --- LR1121/STM32
+        configuration and logging format.
+  \item \texttt{docs/hardware/trace\_driven\_validation\_checklist.md} --- per-run
+        checklist for validating the pipeline from IQ capture to posterior.
+\end{itemize}
