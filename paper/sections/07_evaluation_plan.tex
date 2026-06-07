@@ -2,42 +2,62 @@
 
 All evaluations to date are \textbf{synthetic and trace-driven}.
 No real satellite OTA data is used.  Results are reproducible by running the
-scripts listed below.
+scripts listed below.  No paper performance claims are made from these runs.
 
 \subsection{Reproducible Synthetic Pass}
-The \texttt{generate\\_synthetic\\_dataset.py} script produces a deterministic
-synthetic satellite pass (400~km altitude, 53° inclination, 10~min duration)
-and exports the geometry and observations to
-\texttt{experiments/results/synthetic/synthetic\\_pass\\_dataset.json} and
-the corresponding CSV.  This is used as the reference geometry for all
-subsequent experiments.
+The \texttt{generate\_synthetic\_dataset.py} script produces a deterministic
+synthetic satellite pass (400~km altitude, 53° inclination, 10-minute duration)
+and exports geometry and observations to:
+\begin{itemize}
+  \item \texttt{experiments/results/synthetic/synthetic\_pass\_dataset.json}
+  \item \texttt{experiments/results/synthetic/synthetic\_pass\_observations.csv}
+\end{itemize}
+The geometry serves as the reference for all subsequent experiments.  Output
+includes clean and noisy Doppler and delay series, carrier frequency, drift,
+time offset, and noise levels---all recorded in the JSON metadata.
 
 \subsection{Monte Carlo Coarse Localization Study}
-The \texttt{run\\_monte\\_carlo\\_synthetic.py} script runs repeated estimator
-trials over a fixed geometry with randomized noise realizations.  It outputs
-per-trial results (MAP location, error magnitude, posterior entropy, HPD region
-size) to \texttt{experiments/results/montecarlo/monte\\_carlo\\_trials.csv} and
-a summary JSON.
-
-Results are preliminary diagnostics; no paper performance claims are made
-from these runs.
+The \texttt{run\_monte\_carlo\_synthetic.py} script runs repeated estimator
+trials over the fixed synthetic geometry with independent noise realizations.
+Each trial produces MAP location, error magnitude, posterior entropy, and HPD
+region size.  Results are exported to:
+\begin{itemize}
+  \item \texttt{experiments/results/montecarlo/monte\_carlo\_trials.csv}
+  \item \texttt{experiments/results/montecarlo/monte\_carlo\_summary.json}
+\end{itemize}
+The summary JSON records mean, median, p90 error magnitude, and posterior
+entropy diagnostics.  These are \textbf{preliminary diagnostics only};
+the number of trials (configurable via \texttt{--trials}) should be increased
+for any published result, and confidence intervals must be reported.
 
 \subsection{CRLB Timestamp Sensitivity Diagnostic}
-The \texttt{diagnose\\_crlb\\_sensitivity.py} script evaluates the CRLB lower
-bound across a sweep of timestamp noise $\sigma_\tau$.  It demonstrates that
-at $\sigma_\tau=1$ ms (range noise $\approx300$ km) the CRLB for position is
-several hundred km, confirming that sub-millisecond timing is needed for
-meaningful range information.  The CRLB is a theoretical lower bound only;
-the MAP estimator with priors is not directly comparable to classical CRLB.
+The \texttt{diagnose\_crlb\_sensitivity.py} script evaluates the classical
+CRLB lower bound across a sweep of timestamp noise $\sigma_\tau$.  Results are
+exported to:
+\begin{itemize}
+  \item \texttt{experiments/results/crlb/crlb\_sensitivity.csv}
+  \item \texttt{experiments/results/crlb/crlb\_sensitivity\_summary.json}
+\end{itemize}
+The sweep confirms that at $\sigma_\tau = 1$ ms (range noise $\approx 300$ km)
+the CRLB for position exceeds several hundred km, establishing that sub-ms
+timestamp accuracy is needed for meaningful range information.  The classical
+CRLB assumes unbiased estimation with no priors on nuisance parameters; the
+MAP estimator used in this work applies weak priors and is not directly
+comparable to the classical CRLB.
 
 \subsection{Trace-driven HIL Plan}
-Section~\ref{sec:hil} describes the hardware-in-the-loop validation design.
-No HIL runs have been executed; no real IQ captures are used in this draft.
+Section~\ref{sec:hil} describes the hardware-in-the-loop validation design
+in detail.  No HIL runs have been executed; no real IQ captures are used in
+this draft.  The plan specifies LR1121/STM32 as a characterized packet source
+(transmit-only) and USRP B210 for IQ capture, with offline injection of
+Doppler, CFO, delay, and noise.  The plan is trace-driven and makes no OTA
+claims.
 
 \subsection{Implemented Artifacts Summary}
 \input{tables/evaluation_summary.tex}
 
-The scripts are executed in the following order to reproduce all artifacts:
+\subsection{Reproduction Commands}
+To regenerate all artifacts:
 \begin{verbatim}
 python scripts/generate_synthetic_dataset.py
 python scripts/run_monte_carlo_synthetic.py --trials 5

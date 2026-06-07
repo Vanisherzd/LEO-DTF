@@ -1,58 +1,104 @@
 \section{System Model}\label{sec:system_model}
 
-\subsection{Terminal Position}
+\subsection{Geometry and Region of Interest}
 Let $\mathbf{x} = [e, n]^{\top}$ denote the unknown terminal easting-northing (EN)
 offset in meters from a known reference point within a bounded region of interest
-$\mathcal{R} \subset \mathbb{R}^2$.  The terminal altitude is assumed known or
-fixed for this analysis.
+$\mathcal{R} \subset \mathbb{R}^2$.  The terminal altitude is assumed fixed or
+obtained from a coarse DEM; only the horizontal position is estimated in this
+work.
+
+The terminal position in ECEF coordinates is
+\begin{equation}
+  \mathbf{p}_t(\mathbf{x}) = \mathbf{p}_0 + \mathbf{R}_{\text{ENU}} \begin{bmatrix} e \\ n \\ 0 \end{bmatrix},
+  \label{eq:terminal_ecef}
+\end{equation}
+where $\mathbf{p}_0$ is the ECEF position of the reference point and
+$\mathbf{R}_{\text{ENU}}$ is the rotation matrix from local ENU to ECEF.
 
 \subsection{Satellite State from TLE/SGP4}
-A ground station receives a TLE set for the visible LEO satellite.  The SGP4
-propagator \cite{todo_sgp4} returns the satellite position
+A ground station acquires a two-line element (TLE) set for the visible LEO
+satellite.  The SGP4 propagator~\cite{todo_sgp4} returns the satellite position
 $\mathbf{s}(t) \in \mathbb{R}^3$ (km, ECEF) and velocity
-$\mathbf{v}_s(t) \in \mathbb{R}^3$ (km/s, ECEF) at UTC time $t$.
+$\mathbf{v}_s(t) \in \mathbb{R}^3$ (km/s, ECEF) at UTC time $t$.  The resulting
+trajectory defines the geometric basis for all Doppler and delay computations.
 
-\subsection{Geometric Range and Range-Rate}
-The geometric range from terminal at ECEF position $\mathbf{p}_t$ to satellite is
+\subsection{Range, Range-Rate, and LOS Vector}
+The geometric range at time $t$ is
 \begin{equation}
-  \rho(t; \mathbf{x}) = \bigl\|\mathbf{s}(t) - \mathbf{p}_t(\mathbf{x})\bigr\|,
+  \rho(t; \mathbf{x}) = \bigl\|\mathbf{s}(t) - \mathbf{p}_t(\mathbf{x})\bigr\|_2 .
+  \label{eq:range}
 \end{equation}
-where $\mathbf{p}_t(\mathbf{x})$ is the terminal ECEF position corresponding to EN
-offset $\mathbf{x}$ via a local ENU basis.
-The range-rate is
+The line-of-sight (LOS) unit vector from terminal to satellite is
 \begin{equation}
-  \dot{\rho}(t; \mathbf{x}) = \frac{(\mathbf{s}(t)-\mathbf{p}_t)\cdot\mathbf{v}_s(t)}
-                                 {\rho(t; \mathbf{x})}.
+  \mathbf{u}(t; \mathbf{x}) = \frac{\mathbf{s}(t) - \mathbf{p}_t(\mathbf{x})}
+                                   {\rho(t; \mathbf{x})} .
+  \label{eq:los_unit}
+\end{equation}
+Assuming the terminal is stationary or slowly moving during one pass
+($\|\mathbf{v}_t\| \ll \|\mathbf{v}_s\|$), the scalar range-rate is
+\begin{equation}
+  \dot{\rho}(t; \mathbf{x})
+  = \mathbf{u}(t; \mathbf{x})^\top \mathbf{v}_s(t)
+  = \frac{(\mathbf{s}(t) - \mathbf{p}_t)^\top \mathbf{v}_s(t)}
+          {\rho(t; \mathbf{x})} .
+  \label{eq:range_rate}
 \end{equation}
 
 \subsection{Doppler Observation}
 The one-way Doppler shift at carrier frequency $f_c$ is
 \begin{equation}
   f_D(t; \mathbf{x}) = -\frac{f_c}{c}\,\dot{\rho}(t; \mathbf{x}),
+  \label{eq:doppler}
 \end{equation}
-where $c = 299\,792.458$~km/s is the speed of light.
+where $c = 299\,792.458$ km/s.  The terminal's low-cost oscillator introduces
+a constant carrier frequency offset $b_0$ (Hz), a linear drift term $b_1$ (Hz/s),
+and zero-mean Gaussian noise $\epsilon_i \sim \mathcal{N}(0, \sigma_f^2)$.
 
-The terminal's low-quality oscillator contaminates the observed frequency with
-a constant CFO $b_0$ (Hz), a linear drift term $b_1$ (Hz/s), and additive noise
-$\epsilon_i \sim \mathcal{N}(0,\sigma_f^2)$.  At discrete observation time
-$t_i = t_0 + i\Delta t_{\text{pkt}}$ the received frequency is
+At discrete observation time $t_i = t_0 + i\Delta t_{\text{pkt}}$ the received
+frequency is
 \begin{equation}
   y_f(t_i) = f_D(t_i; \mathbf{x}) + b_0 + b_1\,t_i + \epsilon_i .
   \label{eq:freq_obs}
 \end{equation}
 
 \subsection{Optional Delay Observation}
-When a packet arrival timestamp is recorded, the propagation delay
+When packet arrival timestamps are recorded, the propagation delay
 $\tau(t) = \rho(t; \mathbf{x})/c$ is observable up to an unknown time offset
-$\Delta t$ and noise $\eta_i \sim \mathcal{N}(0,\sigma_\tau^2)$:
+$\Delta t$ and noise $\eta_i \sim \mathcal{N}(0, \sigma_\tau^2)$:
 \begin{equation}
   y_\tau(t_i) = t_i + \Delta t + \frac{\rho(t_i; \mathbf{x})}{c} + \eta_i .
   \label{eq:delay_obs}
 \end{equation}
-In low-cost receivers, timestamp resolution may be limited; the estimator
-accounts for this via the noise std $\sigma_\tau$.
+Low-cost IEEE 802.15.4 or LoRa receivers typically have timestamp resolution
+of the order of microseconds to milliseconds; the estimator models this via
+$\sigma_\tau$.
 
-\subsection{Nuisance Parameter Summary}
+\subsection{Nuisance Parameter Vector}
+The unknown parameters
+\begin{equation}
+  \boldsymbol{\theta} = [\Delta t,\; b_0,\; b_1]^{\top}
+  \label{eq:nuisance_vec}
+\end{equation}
+are treated as nuisance and handled jointly with position.
+
+\subsection{Assumptions and Scope}
+The current implementation and evaluation assume:
+\begin{itemize}
+  \item A bounded ROI is \emph{a priori} known (e.g., from network coverage
+        area, cell-ID, or approximate GNSS), enabling a gridded search over
+        candidate positions.
+  \item The terminal is stationary or has negligible velocity during the
+        observation window (approximately 5--10 minutes).
+  \item TLE data for the satellite in view is available and within SGP4
+        validity (typically valid to a few days).
+  \item Observations are synthetic or extracted from offline IQ captures;
+        no real satellite over-the-air validation is claimed in this draft.
+  \item This work does not provide meter-level localization; it targets
+        coarse estimation sufficient to support uplink scheduling and
+        link adaptation in NTN/D2S scenarios.
+\end{itemize}
+Table~\ref{tab:params} summarizes the model parameters.
+
 \begin{table}[h]
   \caption{Nuisance and State Parameters}
   \label{tab:params}
@@ -60,12 +106,11 @@ accounts for this via the noise std $\sigma_\tau$.
   \begin{tabular}{cll}
     \hline
     Symbol & Description & Units \\ \hline
-    $\Delta t$ & Timing offset & s \\
-    $b_0$      & Constant CFO    & Hz \\
-    $b_1$      & Linear drift    & Hz/s \\
-    $\epsilon$ & Freq.\ noise    & Hz \\
-    $\eta$     & Delay noise     & s \\ \hline
+    $\mathbf{x}$ & Terminal EN offset (unknown) & m \\
+    $\Delta t$   & Timing offset (unknown) & s \\
+    $b_0$        & Constant CFO (unknown)    & Hz \\
+    $b_1$        & Linear drift (unknown)    & Hz/s \\
+    $\epsilon$   & Frequency noise           & Hz \\
+    $\eta$       & Delay noise              & s \\ \hline
   \end{tabular}
 \end{table}
-The unknown vector $\boldsymbol{\theta} = [\Delta t, b_0, b_1]^{\top}$ is treated
-as nuisance to be marginalized or fitted jointly with position.

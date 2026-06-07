@@ -2,54 +2,87 @@
 
 \subsection{Fingerprint as a Geometric Signature}
 The Doppler-time fingerprint is the functional relationship
-$f_D(t; \mathbf{x})$ induced by a candidate position $\mathbf{x}$ over the
+$f_D(t; \mathbf{x})$ induced by candidate position $\mathbf{x}$ over the
 duration of a satellite pass.  Because the range-rate $\dot{\rho}(t; \mathbf{x})$
-is geometry-dependent, two distinct positions inside the ROI generally produce
-different Doppler trajectories.  The \emph{shape} of this trajectory across the
-pass---its curvature, peak value, and zero-crossing time---constitutes a
-position-dependent fingerprint.
+depends on the terminal-satellite geometry, two distinct positions inside the
+ROI generally produce measurably different Doppler trajectories.  The
+\textbf{shape} of this trajectory---its curvature, peak magnitude, and
+zero-crossing time---constitutes a position-dependent fingerprint.
+
+Define the discrete Doppler fingerprint vector over $N$ observation epochs:
+\begin{equation}
+  \mathbf{g}(\mathbf{x})
+  = \bigl[
+      f_D(t_1; \mathbf{x}),\;
+      f_D(t_2; \mathbf{x}),\;
+      \ldots,\;
+      f_D(t_N; \mathbf{x})
+    \bigr]^{\top}
+  \in \mathbb{R}^{N}.
+  \label{eq:doppler_fingerprint}
+\end{equation}
+If delay observations are available, the corresponding delay fingerprint is
+\begin{equation}
+  \mathbf{h}(\mathbf{x})
+  = \bigl[
+      \rho(t_1; \mathbf{x})/c,\;
+      \ldots,\;
+      \rho(t_N; \mathbf{x})/c
+    \bigr]^{\top}
+  \in \mathbb{R}^{N}.
+  \label{eq:delay_fingerprint}
+\end{equation}
+The full observation vector is $\mathbf{y} = [\mathbf{y}_f^{\top},\mathbf{y}_\tau^{\top}]^{\top}$
+when both modalities are used, or $\mathbf{y} = \mathbf{y}_f$ for frequency-only.
 
 \subsection{Sensitivity to Nuisance Parameters}
-The observed frequency $y_f(t_i)$ adds to $f_D$ a vertical offset $b_0$, a linear
-tilt $b_1 t_i$, and noise $\epsilon_i$.  The timing offset $\Delta t$ shifts the
-propagation delay and indirectly affects the Doppler curve through $\rho(t)$.
-These four nuisance terms must be separated from the geometric component to
-recover position information.
-
+The observed frequency at each epoch is
+\begin{equation}
+  y_f(t_i) = f_D(t_i; \mathbf{x}) + b_0 + b_1\,t_i + \epsilon_i ,
+\end{equation}
+so the nuisance terms affect the fingerprint as follows:
 \begin{itemize}
-  \item $b_0$: shifts the entire frequency curve vertically.
-  \item $b_1$: tilts the curve; positive drift makes later observations
-        systematically higher.
-  \item $\Delta t$: shifts the delay observation; has secondary effect on
-        Doppler through the range at each time.
+  \item $b_0$ adds a constant vertical offset to $\mathbf{g}(\mathbf{x})$.
+  \item $b_1$ adds a linear tilt across the time axis of $\mathbf{g}(\mathbf{x})$.
+  \item $\Delta t$ shifts the delay fingerprint $\mathbf{h}(\mathbf{x})$ and has
+        a secondary effect on Doppler via the range at each shifted time.
+  \item $\epsilon_i$ adds independent Gaussian noise, blurring the posterior.
 \end{itemize}
+These effects are degenerate with position: a vertical shift can be compensated
+by moving the candidate location, and a linear tilt can mimic the Doppler curve
+of a different ground track.  Joint estimation of $\mathbf{x}$ and
+$\boldsymbol{\theta}$ is required to disambiguate geometry from oscillator
+state.
 
-The estimator handles these by joint optimization over position and nuisance
-parameters (Section~\ref{sec:estimator}).
+\subsection{Ambiguity and Multi-Sample Discriminative Power}
+A single snapshot observation provides at most one scalar constraint
+(range-rate) on two unknown position coordinates, making the problem
+underdetermined.  Moreover, the scalar Doppler $f_D$ is approximately linear
+in the lateral position coordinate near the sub-satellite track, creating
+a left-right ambiguity.  Tracking the Doppler curve over a 5--10 minute pass
+samples the geometry at multiple elevation angles, substantially increasing
+the rank of the observation.  The multi-sample fingerprint in
+\eqref{eq:doppler_fingerprint} has discriminative power only when the Doppler
+trajectory shape---not just its value at one instant---is used.
 
-\subsection{Discriminative Power of Multi-Time Observations}
-A single snapshot observation provides at most one constraint (range-rate) on
-two unknown position coordinates, making the problem underdetermined.  Tracking
-the Doppler curve over a 5--10 minute pass samples the geometry at multiple
-elevation angles, substantially increasing the position information content.
-This motivates the grid-search approach rather than a closed-form solution.
+This motivates the grid-search posterior approach rather than a closed-form
+solution; it also explains why the CRLB for position from Doppler-only
+observations can be large when the ROI spans hundreds of kilometers.
 
-\subsection{Conceptual Figure}
-\begin{figure}[htbp]
+\subsection{Placeholder Figure}
+Figure~\ref{fig:dtf_concept} illustrates the fingerprint concept.
+\begin{figure}[tbp]
   \centering
-  \fbox{\parbox{0.9\linewidth}{
+  \fbox{\parbox{0.92\linewidth}{
     \centering
-    Placeholder for Doppler-time fingerprint concept figure.
-
-    Expected content: \\
-    (a) Satellite ground track and three candidate ROI positions \\
-    (b) Corresponding Doppler-time curves showing differentiation \\
-    (c) Effect of CFO/drift on the observed frequency curve
+    \textbf{Placeholder: Conceptual Doppler-time fingerprints.}\\[4pt]
+    (a) ROI with three candidate positions and satellite ground track. \\
+    (b) Doppler-time curves $f_D(t; \mathbf{x}_k)$ for each candidate, showing
+        shape differentiation across the pass. \\
+    (c) Observed frequency with CFO ($b_0$) and drift ($b_1$) overlaid,
+        showing vertical shift and tilt.
   }}
-  \caption{Doppler-time fingerprint concept.}
+  \caption{Conceptual illustration of Doppler-time fingerprints induced by
+           different candidate terminal locations inside a bounded ROI.}
   \label{fig:dtf_concept}
 \end{figure}
-
-Figure~\ref{fig:dtf_concept} illustrates how different candidate positions
-produce measurably different Doppler curves, and how CFO/drift shift the
-observed curve relative to the clean geometric fingerprint.

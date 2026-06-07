@@ -95,9 +95,12 @@ is performed or claimed.
 The LaTeX manuscript skeleton is in `paper/`.  It is a **working draft**;
 no paper claims are made.  Current status:
 
-- Abstract and all 9 sections are drafted as skeleton/initial text.
-- All quantitative results in the paper are currently preliminary and
-  synthetic; no real satellite OTA data is used.
+- System model (Section~3) and estimator (Section~5) have been expanded to
+  include full mathematical notation and implementation details.
+- Evaluation (Section~7) references reproducible synthetic experiments and
+  includes a trace-driven HIL plan.
+- All quantitative results are preliminary and synthetic; no real satellite
+  OTA data is used.
 - No localization accuracy claims are made; all metrics are simulation diagnostics.
 - The HIL section explicitly states that no OTA validation is claimed.
 
