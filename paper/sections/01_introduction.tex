@@ -31,13 +31,15 @@ This paper makes the following contributions:
         it from oscillator nuisances.
   \item A nuisance-aware Bayesian grid posterior estimator that jointly
         infers coarse position, time offset, CFO, and drift over a bounded
-        region of interest (ROI).
+        region of interest (ROI), with explicit marginalization over nuisance
+        dimensions.
   \item A reproducible synthetic-pass and Monte Carlo evaluation pipeline
-        that produces posterior heatmaps, error statistics, and CRLB
-        sensitivity diagnostics without requiring satellite over-the-air
-        data.
-  \item A trace-driven hardware-in-the-loop (HIL) validation plan using an
-        LR1121/STM32 packet source and a USRP B210 capture front-end,
+        that produces posterior heatmaps, error statistics, CRLB sensitivity
+        diagnostics, and a Doppler-time ambiguity ablation study demonstrating
+        why multi-epoch fingerprinting outperforms single-snapshot Doppler,
+        all without requiring satellite over-the-air data.
+  \item A conservative trace-driven hardware-in-the-loop (HIL) validation plan
+        using an LR1121/STM32 packet source and a USRP B210 capture front-end,
         enabling validation of the signal-processing and observation-extraction
         pipeline in a lab setting without OTA claims.
 \end{itemize}

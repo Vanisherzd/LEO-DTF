@@ -19,6 +19,25 @@ At a carrier frequency of 1.6~GHz this produces Doppler shifts of order
 $\pm 40$~kHz---well above the frequency estimation errors typical of
 low-cost oscillators.
 
+\subsection{Doppler-Aided Localization and State Estimation}
+LEO Doppler has been studied as a positioning source in several prior
+lines of work.  Early approaches used single-epoch Doppler measurements
+from multiple satellite passes for rough geolocation
+\cite{todo_doppler_positioning}; these methods require many passes and
+provide accuracy limited by satellite geometry.  More recent work in NTN
+positioning considers joint Doppler-DMIMO techniques and multi-cell
+uplink approaches that benefit from network-side cooperation
+\cite{todo_ntn_positioning}.  Oscillator imperfections in low-cost IoT
+devices are identified as a major practical barrier, with CFO and drift
+needing explicit estimation \cite{todo_oscillator_nuisance}.
+
+LEO-DTF differs from these lines of work by focusing on bounded-ROI
+coarse localization and uplink state estimation using a nuisance-aware
+Doppler-time posterior in a reproducible synthetic and trace-driven
+evaluation setting.  Rather than targeting global geolocation or
+GNSS-replacement accuracy, it seeks to narrow the candidate region
+for D2S IoT scheduling and link adaptation within a known coverage area.
+
 \subsection{Course Localization Utility}
 Centimeter- or decimeter-level GNSS-grade accuracy is not required for many
 NTN IoT use cases.  Bounding a device's position to a 100~m--10~km region of
