@@ -1,0 +1,35 @@
+# LEO-DTF CRLB Sensitivity Diagnostic Configuration
+# Documentation-first; scripts may not yet consume this directly.
+
+# Ground station
+lat0_deg: 40.0
+lon0_deg: -105.0
+alt0_km: 1.5
+gs_enu_offset_true_m: [0.0, 0.0]  # [E, N] offset
+
+# Pass geometry (matches synthetic orbit fallback)
+num_packets: 20
+total_time_s: 600.0
+carrier_freq_hz: 1.6e9
+
+# Fixed frequency noise std
+sigma_f_hz: 1.0
+
+# Timestamp noise sweep
+sigma_tau_sweep: [1.0e-3, 1.0e-4, 1.0e-5, 1.0e-6]
+
+# Nuisance parameters (zero for CRLB)
+delta_t_true_s: 0.0
+b0_true_hz: 0.0
+b1_true_hz_per_s: 0.0
+
+# Deterministic orbit (synthetic 400 km circular, 53° inclination)
+use_synthetic_orbit: true
+
+# Output
+output_csv: "experiments/results/crlb/crlb_sensitivity.csv"
+output_summary_json: "experiments/results/crlb/crlb_sensitivity_summary.json"
+
+# Notes:
+# - CRLB is a lower bound; MAP estimator uses priors and may outperform it
+# - sigma_tau=1ms gives range noise ≈ 300 km; not realistic for timing

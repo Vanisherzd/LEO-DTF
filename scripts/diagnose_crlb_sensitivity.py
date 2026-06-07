@@ -52,6 +52,14 @@ def get_synthetic_orbit(times_dt):
 
 
 def main():
+    import json
+    import csv
+
+    OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'experiments', 'results', 'crlb')
+    OUTPUT_CSV = os.path.join(OUTPUT_DIR, 'crlb_sensitivity.csv')
+    OUTPUT_JSON = os.path.join(OUTPUT_DIR, 'crlb_sensitivity_summary.json')
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     print("LEO-DTF CRLB Sensitivity Diagnostic")
     print("=" * 60)
     print()
@@ -146,7 +154,7 @@ def main():
         print(f"! sigma_tau=1ms gives RMSE > 100 km: timestamp information is negligible")
         print(f"  At sigma_tau=1ms, range noise = {results[0]['range_noise_km']:.0f} km")
         print("  This overwhelms the weak position sensitivity of propagation delay.")
-    
+
     print()
     print("Recommendations:")
     print("-" * 60)
@@ -155,9 +163,65 @@ def main():
     print("2. The classical CRLB assumes unbiased estimation (no priors on b0/b1)")
     print("3. The MAP estimator uses priors, which regularizes the b0-position correlation")
     print("4. Therefore, MAP error and classical CRLB are not directly comparable")
+
+    finite_results = [r for r in results if r.get("finite")]
     print()
     print("See docs/research_phase2_notes.md for detailed discussion.")
-    
+
+    # Write CSV
+    csv_fields = ['sigma_tau_s', 'range_noise_km', 'rmse_bound_m', 'std_e_m', 'std_n_m', 'finite']
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    with open(OUTPUT_CSV, 'w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=csv_fields, extrasaction='ignore')
+        writer.writeheader()
+        for r in results:
+            row = {k: (v if not isinstance(v, bool) else ('Yes' if v else 'No'))
+                   for k, v in r.items()}
+            writer.writerow(row)
+
+    # Write JSON summary
+    summary = {
+        "experiment": "crlb_sensitivity",
+        "sigma_f_hz": sigma_f,
+        "sigma_tau_sweep": sigma_tau_values,
+        "carrier_freq_hz": carrier_freq_hz,
+        "num_packets": num_packets,
+        "total_time_s": total_time_s,
+        "geometry": {
+            "lat0_deg": lat0_deg,
+            "lon0_deg": lon0_deg,
+            "alt0_km": alt0_km,
+            "orbit": "synthetic 400km circular equatorial",
+        },
+        "results": [
+            {k: (float(v) if isinstance(v, (np.floating, float)) else v) for k, v in r.items()}
+            for r in results
+        ],
+        "qualitative": {
+            "trend": "CRLB RMSE decreases as sigma_tau decreases" if (
+                len(finite_results) >= 2 and
+                finite_results[-1]['rmse_bound_m'] < finite_results[0]['rmse_bound_m']
+            ) else "Non-monotonic or NaN",
+            "sigma_tau_1ms_note": (
+                "sigma_tau=1ms gives RMSE > 100 km: timestamp info negligible "
+                f"(range noise = {results[0]['range_noise_km']:.0f} km)"
+                if results[0]['finite'] and results[0]['rmse_bound_m'] > 1e5 else None
+            ),
+        },
+        "recommendations": [
+            "For realistic CRLB, sigma_tau <= 10 microseconds (range noise <= ~3 km)",
+            "MAP with priors regularizes b0-position correlation vs. classical CRLB",
+            "MAP error and classical CRLB are not directly comparable",
+        ],
+        "output_csv": OUTPUT_CSV,
+        "output_json": OUTPUT_JSON,
+    }
+    with open(OUTPUT_JSON, 'w') as f:
+        json.dump(summary, f, indent=2)
+
+    print(f"\nCSV written: {OUTPUT_CSV}")
+    print(f"JSON written: {OUTPUT_JSON}")
+    print("NOTE: Diagnostic output only. No performance claims made.")
     return 0
 
 

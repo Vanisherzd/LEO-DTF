@@ -164,8 +164,11 @@ def main():
     parser.add_argument('--seed', type=int, default=42,
                         help='Numpy random seed (default: 42)')
     parser.add_argument('--output', '-o',
-                        default='outputs/monte_carlo_synthetic.csv',
+                        default='experiments/results/montecarlo/montecarlo_trials.csv',
                         help='Output CSV path')
+    parser.add_argument('--summary-json',
+                        default='experiments/results/montecarlo/montecarlo_summary.json',
+                        help='Output summary JSON path')
     args = parser.parse_args()
 
     # ---- Load modules ----
@@ -241,18 +244,62 @@ def main():
 
     # ---- Summary ----
     errors = []
+    entropies = []
+    hpd_sizes = []
     with open(args.output, newline='') as f:
         reader = csv.DictReader(f)
         for row in reader:
             errors.append(float(row['error_mag_m']))
+            entropies.append(float(row['posterior_entropy']))
+            hpd_sizes.append(float(row['hpd_n_cells']))
     errors = np.array(errors)
     print(f"\n── Summary ({args.trials} trials, seed={args.seed}) ──")
     print(f"  error_mag mean : {np.mean(errors):.2f} m")
     print(f"  error_mag std  : {np.std(errors):.2f} m")
     print(f"  error_mag min  : {np.min(errors):.2f} m")
     print(f"  error_mag max  : {np.max(errors):.2f} m")
+    print(f"  error_mag p50  : {np.median(errors):.2f} m")
+    print(f"  error_mag p90  : {np.percentile(errors, 90):.2f} m")
+
+    # Write summary JSON
+    import json
+    summary = {
+        "experiment": "montecarlo_synthetic",
+        "trials": args.trials,
+        "seed": args.seed,
+        "metrics": {
+            "error_mag_mean_m": float(np.mean(errors)),
+            "error_mag_std_m": float(np.std(errors)),
+            "error_mag_min_m": float(np.min(errors)),
+            "error_mag_max_m": float(np.max(errors)),
+            "error_mag_median_m": float(np.median(errors)),
+            "error_mag_p90_m": float(np.percentile(errors, 90)),
+            "posterior_entropy_mean": float(np.mean(entropies)),
+            "hpd_n_cells_mean": float(np.mean(hpd_sizes)),
+        },
+        "config": {
+            "roi_e_span_m": [E_MIN, E_MAX],
+            "roi_n_span_m": [N_MIN, N_MAX],
+            "grid_step_m": STEP_M,
+            "delta_t_span_s": [DELTA_T_MIN, DELTA_T_MAX],
+            "num_packets": NUM_PACKETS,
+            "total_time_s": TOTAL_TIME_S,
+            "carrier_freq_hz": CARRIER_FREQ_HZ,
+            "true_offset_en_m": TRUE_OFFSET_EN.tolist(),
+            "b0_true_hz": B0_TRUE,
+            "b1_true_hz_s": B1_TRUE,
+            "delta_t_true_s": DELTA_T_TRUE,
+            "sigma_f_hz": SIGMA_F,
+            "sigma_tau_s": SIGMA_TAU,
+        },
+        "output_csv": args.output,
+    }
+    os.makedirs(os.path.dirname(args.summary_json) or '.', exist_ok=True)
+    with open(args.summary_json, 'w') as f:
+        json.dump(summary, f, indent=2)
 
     print(f"\nCSV written: {args.output}")
+    print(f"JSON written: {args.summary_json}")
     print("NOTE: Synthetic diagnostic only. No paper claims are made.")
     return 0
 

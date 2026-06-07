@@ -1,0 +1,53 @@
+# LEO-DTF Monte Carlo Configuration
+# Documentation-first; scripts may not yet consume this directly.
+
+# Trial settings
+trials: 100
+seed: 42
+
+# ROI / grid
+roi_center_lat_deg: 40.0
+roi_center_lon_deg: -105.0
+roi_alt_km: 1.5
+roi_e_min_m: -200.0
+roi_e_max_m: 200.0
+roi_n_min_m: -200.0
+roi_n_max_m: 200.0
+grid_step_m: 20.0
+
+# Delta-t (time offset) grid
+delta_t_min_s: -0.01
+delta_t_max_s: 0.01
+delta_t_n: 21
+
+# Pass geometry
+num_packets: 20
+total_time_s: 600.0       # 10-minute observation window
+carrier_freq_hz: 1.6e9
+
+# True EN offset of the ground station (what estimator should recover)
+true_offset_en_m: [100.0, 50.0]   # [E, N] in meters
+
+# True nuisance parameters
+b0_true_hz: 50.0          # Hz CFO
+b1_true_hz_per_s: 0.1      # Hz/s drift
+delta_t_true_s: 0.001      # seconds
+
+# Observation noise std (same for all trials)
+sigma_f_hz: 1.0
+sigma_tau_s: 1.0e-3
+
+# Weak priors on nuisance
+b0_prior_mean: 0.0
+b0_prior_std: 100.0
+b1_prior_mean: 0.0
+b1_prior_std: 1.0
+delta_t_prior_mean: 0.0
+delta_t_prior_std: 0.01
+
+# Output
+output_csv: "experiments/results/montecarlo/montecarlo_trials.csv"
+output_summary_json: "experiments/results/montecarlo/montecarlo_summary.json"
+
+# Notes:
+# - All results are synthetic diagnostic output; no paper claims made

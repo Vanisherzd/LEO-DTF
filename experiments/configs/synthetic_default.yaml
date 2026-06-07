@@ -1,0 +1,32 @@
+# LEO-DTF Synthetic Pass Dataset Configuration
+# Documentation-first; scripts may not yet consume this directly.
+
+# Ground truth location
+true_lat_deg: 40.0
+true_lon_deg: -105.0
+true_alt_m: 0.0
+
+# Pass geometry
+duration_s: 600.0          # 10-minute pass
+sample_interval_s: 30.0    # 21 observation epochs
+carrier_hz: 1.6e9         # 1.6 GHz L-band
+
+# Nuisance parameters injected into observations
+cfo_hz: 50.0               # Hz
+drift_hz_per_s: 0.1        # Hz/s linear drift
+time_offset_s: 1.0e-3     # 1 ms timing offset
+
+# Observation noise (std)
+doppler_noise_std_hz: 1.0  # Hz
+delay_noise_std_s: 1.0e-3  # seconds (1 ms ≈ 300 km range noise)
+
+# Deterministic seed for reproducibility
+seed: 42
+
+# Output path (scripts produce these; do not manually edit)
+output_json: "experiments/results/synthetic/synthetic_pass_dataset.json"
+output_csv: "experiments/results/synthetic/synthetic_pass_observations.csv"
+
+# Notes:
+# - TLE is synthetic fallback (400 km, 53° inclination) when not provided
+# - No real satellite OTA data is used

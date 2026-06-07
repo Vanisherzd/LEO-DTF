@@ -54,6 +54,41 @@ time offset within a bounded region of interest (ROI).
 | `scripts/generate_synthetic_dataset.py` | Generate reproducible synthetic pass dataset (JSON + CSV) |
 | `scripts/run_monte_carlo_synthetic.py` | Monte Carlo trials with per-trial CSV output |
 | `scripts/diagnose_crlb_sensitivity.py` | CRLB RMSE vs. timestamp noise sweep |
+| `scripts/summarize_evaluation.py` | Summarize all evaluation outputs to Markdown/JSON/LaTeX table |
+
+## Reproduce Preliminary Evaluation Artifacts
+
+All outputs go under `experiments/results/`:
+
+```bash
+# 1. Generate synthetic pass dataset
+python scripts/generate_synthetic_dataset.py
+# Output: experiments/results/synthetic/synthetic_pass_dataset.json
+#         experiments/results/synthetic/synthetic_pass_observations.csv
+
+# 2. Run Monte Carlo trials (use --trials N for more trials)
+python scripts/run_monte_carlo_synthetic.py --trials 5
+# Output: experiments/results/montecarlo/montecarlo_trials.csv
+#         experiments/results/montecarlo/montecarlo_summary.json
+
+# 3. CRLB sensitivity diagnostic
+python scripts/diagnose_crlb_sensitivity.py
+# Output: experiments/results/crlb/crlb_sensitivity.csv
+#         experiments/results/crlb/crlb_sensitivity_summary.json
+
+# 4. Summarize all results into one report
+python scripts/summarize_evaluation.py
+# Output: experiments/results/evaluation_summary.md
+#         experiments/results/evaluation_summary.json
+#         paper/tables/evaluation_summary.tex
+```
+
+**Config files** (`experiments/configs/`) are currently documentation-first;
+they record the experimental parameters but scripts do not yet consume them
+directly.
+
+All results are synthetic or trace-driven. No real satellite OTA validation
+is performed or claimed.
 
 ## Manuscript
 

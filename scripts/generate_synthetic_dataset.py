@@ -37,7 +37,7 @@ SCENARIO = dict(
     seed=42,
 )
 
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "experiments", "results")
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "experiments", "results", "synthetic")
 OUTPUT_JSON = os.path.join(OUTPUT_DIR, "synthetic_pass_dataset.json")
 OUTPUT_CSV = os.path.join(OUTPUT_DIR, "synthetic_pass_observations.csv")
 
