@@ -45,6 +45,28 @@ CRLB assumes unbiased estimation with no priors on nuisance parameters; the
 MAP estimator used in this work applies weak priors and is not directly
 comparable to the classical CRLB.
 
+\subsection{Doppler-Time Ambiguity and Ablation}
+The \texttt{run\\_ambiguity\\_ablation.py} script evaluates estimator behavior
+across seven ablation cases that progressively add observation modalities and
+nuisance parameters.  Cases cover: single vs. multi-time frequency observations,
+with/without delay observations, and with/without CFO and drift nuisance.
+
+Key preliminary observations from synthetic runs:
+\begin{itemize}
+  \item Multi-sample frequency observations yield lower posterior ambiguity than
+        a single snapshot, consistent with the intuition that the Doppler curve
+        shape (not just a scalar) carries geometric information.
+  \item When CFO and drift are included as nuisance, posterior entropy increases
+        slightly, reflecting that these parameters partially absorb geometric
+        information during marginalization.
+  \item Delay observations help when $\sigma_\tau$ is small; at $\sigma_\tau=1$ ms
+        the timing channel adds negligible information (range noise $\approx300$ km).
+  \item All results are \textbf{preliminary synthetic diagnostics} and do not
+        constitute paper performance claims.
+\end{itemize}
+
+\input{tables/ablation_summary.tex}
+
 \subsection{Trace-driven HIL Plan}
 Section~\ref{sec:hil} describes the hardware-in-the-loop validation design
 in detail.  No HIL runs have been executed; no real IQ captures are used in

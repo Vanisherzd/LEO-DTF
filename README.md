@@ -81,6 +81,12 @@ python scripts/summarize_evaluation.py
 # Output: experiments/results/evaluation_summary.md
 #         experiments/results/evaluation_summary.json
 #         paper/tables/evaluation_summary.tex
+
+# 5. Run ambiguity and ablation study
+python scripts/run_ambiguity_ablation.py --trials 5
+# Output: experiments/results/ablation/ambiguity_ablation_trials.csv
+#         experiments/results/ablation/ambiguity_ablation_summary.json
+#         paper/tables/ablation_summary.tex
 ```
 
 **Config files** (`experiments/configs/`) are currently documentation-first;
