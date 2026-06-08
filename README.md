@@ -58,6 +58,8 @@ time offset within a bounded region of interest (ROI).
 6. Run CRLB sensitivity diagnostic:
    `python scripts/diagnose_crlb_sensitivity.py`
 7. Run all tests: `pytest -q`
+8. Optional: validate repo state: `python scripts/validate_repo_state.py`
+   Or full validation: `python scripts/validate_repo_state.py --full`
 
 ## Repository Scripts
 
@@ -70,6 +72,7 @@ time offset within a bounded region of interest (ROI).
 | `scripts/run_ambiguity_ablation.py` | Doppler-time ambiguity ablation study (seed=42 for reproducibility) |
 | `scripts/summarize_evaluation.py` | Summarize all evaluation outputs to Markdown/JSON/LaTeX table |
 | `scripts/make_paper_figures.py` | Generate paper figures from evaluation result files |
+| `scripts/validate_repo_state.py` | Repo state validator (fast + full modes) |
 
 ## Reproduce Preliminary Evaluation Artifacts
 
