@@ -130,6 +130,7 @@ no performance claims are made.  Current status:
 - **Limitations (Section 8):** explicitly documents synthetic-only results,
   toy heatmap placeholder, unmodeled TLE/SGP4/atmospheric errors, and
   stub feature extractors.
+- **References:** all `todo_*` entries in `refs.bib` are unverified placeholders — must be replaced before submission (see `docs/bibliography_todo.md`)
 - **All quantitative results are preliminary and synthetic.** No real satellite
   OTA data is used.  No meter-level accuracy or GNSS replacement is claimed.
 
