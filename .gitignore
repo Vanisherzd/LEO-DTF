@@ -4,7 +4,12 @@ __pycache__/
 .env
 .DS_Store
 
-# Large generated artifacts
+# Python build artifacts
+*.egg-info/
+src/*.egg-info/
+
+# Local evaluation outputs
+outputs/
 data/iq_seeds/*
 data/synthetic/*
 experiments/results/*
