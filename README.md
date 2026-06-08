@@ -35,6 +35,13 @@ time offset within a bounded region of interest (ROI).
 
 > **All HIL documents describe planned or trace-driven work. No real satellite OTA validation is claimed in this repository.**
 
+### Review / Audit Documentation
+
+| Document | Purpose |
+|----------|---------|
+| `docs/claim_audit_report.md` | Claim safety audit: allowed/prohibited claims, high-risk sections, manual review checklist |
+| `docs/bibliography_todo.md` | Tracks unverified placeholder citations in paper/refs.bib |
+
 ## Project Structure
 
 - `src/leodtf`: Core implementation (TLE loading, orbit propagation,
