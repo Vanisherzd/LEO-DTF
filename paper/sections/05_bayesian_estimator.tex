@@ -1,5 +1,26 @@
 \section{Bayesian Grid Posterior Estimator}\label{sec:estimator}
 
+\subsection{Notation}
+The observation vector collected over $N$ epochs is
+\begin{equation}
+  \mathbf{y}
+  = \bigl[
+      y_f(t_1), \ldots, y_f(t_N),
+      y_\tau(t_1), \ldots, y_\tau(t_N)
+    \bigr]^{\top}
+  \in \mathbb{R}^{2N},
+  \label{eq:obs_vector}
+\end{equation}
+stacking frequency and delay observations when both modalities are available.
+The nuisance parameter vector is
+\begin{equation}
+  \boldsymbol{\theta} = \bigl[\, \Delta t,\; b_0,\; b_1 \,\bigr]^{\top},
+  \label{eq:nuisance_vec}
+\end{equation}
+comprising the time offset, constant clock offset, and linear clock drift,
+respectively.  The candidate grid is $\mathcal{G} = \{\mathbf{x}_k\}_{k=1}^{K}$
+with $p(\mathbf{x}_k) = 1/K$ (uniform prior).
+
 \subsection{Candidate Grid}
 The estimator operates over a discrete grid $\mathcal{G} = \{\mathbf{x}_k\}_{k=1}^{K}$
 covering the bounded ROI with uniform spacing $\Delta_g$ (meters).  The grid
@@ -60,10 +81,16 @@ The implementation supports two modes:
 \end{itemize}
 
 \subsection{Posterior, MAP, and Credible Region}
-The unnormalized posterior for grid cell $k$ is
+Define the profile score for candidate $\mathbf{x}_k$ as
 \begin{equation}
-  p_k \propto \exp\!\bigl(-\min_{\boldsymbol{\theta}} S(\mathbf{x}_k, \boldsymbol{\theta})\bigr) .
+  S_k \;=\; -\min_{\boldsymbol{\theta}}\; S(\mathbf{x}_k, \boldsymbol{\theta}) ,
+  \label{eq:profile_score}
 \end{equation}
+i.e., the negative of the regularized NLL at its optimum over nuisance
+parameters.  The unnormalized posterior for grid cell $k$ is then
+\begin{equation}
+  p_k \;\propto\; \exp\!\bigl(S_k\bigr) .
+  \end{equation}
 Normalizing gives
 \begin{equation}
   \Pr(\mathbf{x}_k \mid \mathbf{y})
