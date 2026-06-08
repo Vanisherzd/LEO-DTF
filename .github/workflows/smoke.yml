@@ -24,8 +24,14 @@ jobs:
       - name: Run smoke test
         run: python scripts/run_smoke_test.py
 
-      - name: Validate repository state
+      - name: Validate repository state (fast)
         run: python scripts/validate_repo_state.py
+
+      - name: Check paper LaTeX sanity
+        run: python scripts/check_paper_sanity.py
+
+      - name: List placeholder citations
+        run: python scripts/list_placeholder_citations.py
 
       - name: Run tests
         run: pytest -q
