@@ -54,7 +54,7 @@ of a different ground track.  Joint estimation of $\mathbf{x}$ and
 $\boldsymbol{\theta}$ is required to disambiguate geometry from oscillator
 state.
 
-\subsection{Ambiguity and Multi-Sample Discriminative Power}
+\subsection{Multi-Epoch Discriminability}
 A single snapshot observation provides at most one scalar constraint
 (range-rate) on two unknown position coordinates, making the problem
 underdetermined.  Moreover, the scalar Doppler $f_D$ is approximately linear
@@ -68,6 +68,24 @@ trajectory shape---not just its value at one instant---is used.
 This motivates the grid-search posterior approach rather than a closed-form
 solution; it also explains why the CRLB for position from Doppler-only
 observations can be large when the ROI spans hundreds of kilometers.
+
+A simple Mahalanobis diagnostic for the separability of two candidates
+$\mathbf{x}_i$ and $\mathbf{x}_j$ is:
+\begin{equation}
+  d_{ij}
+  = \min_{\theta_i,\theta_j}
+    \bigl\|
+      \boldsymbol{\mu}(\mathbf{x}_i, \theta_i)
+      - \boldsymbol{\mu}(\mathbf{x}_j, \theta_j)
+    \bigr\|_{\Sigma^{-1}} ,
+  \label{eq:fingerprint_distance}
+\end{equation}
+where $\boldsymbol{\mu}(\mathbf{x},\theta)$ is the modeled observation vector
+(frequency and optionally delay) under nuisance parameter $\theta$, and
+$\Sigma$ is the observation noise covariance.
+Larger $d_{ij}$ indicates greater discriminability; $d_{ij}\lesssim 1$ suggests
+that candidates $i$ and $j$ are near-degenerate given the noise level.
+This is a heuristic diagnostic, not a rigorous identifiability condition.
 
 \subsection{Placeholder Figure}
 Figure~\ref{fig:dtf_concept} illustrates the fingerprint concept.
