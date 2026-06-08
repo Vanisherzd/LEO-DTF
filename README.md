@@ -29,6 +29,7 @@ time offset within a bounded region of interest (ROI).
 | `docs/hardware/usrp_b210_capture_protocol.md` | USRP B210 capture metadata and post-capture analysis |
 | `docs/hardware/lr1121_stm32_packet_source.md` | LR1121/STM32 configuration and logging |
 | `docs/hardware/trace_driven_validation_checklist.md` | Per-run validation checklist |
+| `docs/reproducibility_checklist.md` | This checklist — script inventory, artifact locations, claim safety |
 
 > **All HIL documents describe planned or trace-driven work. No real satellite OTA validation is claimed in this repository.**
 
