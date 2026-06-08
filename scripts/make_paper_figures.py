@@ -121,28 +121,80 @@ def figure_dtf_concept():
 # --------------------------------------------------------------------------- #
 
 def figure_posterior_heatmap():
-    out = os.path.join(FIG_DIR, 'posterior_heatmap_placeholder.pdf')
+    # Try to use real posterior diagnostic first
+    csv_path = os.path.join(ROOT, 'experiments', 'results', 'posterior', 'posterior_grid.csv')
+    out_placeholder = os.path.join(FIG_DIR, 'posterior_heatmap_placeholder.pdf')
+    out_diagnostic = os.path.join(FIG_DIR, 'posterior_heatmap_diagnostic.pdf')
+    out = out_diagnostic
 
-    # Deterministic toy Gaussian posterior
-    n = 31
-    x = np.linspace(-15, 15, n)
-    y = np.linspace(-15, 15, n)
-    X, Y = np.meshgrid(x, y)
-    # Peak at (2, 1) km, broad spread
-    Z = np.exp(-((X - 2)**2 / 20 + (Y - 1)**2 / 15))
+    if os.path.exists(csv_path):
+        # Load real posterior grid
+        import csv as csvlib
+        with open(csv_path, newline='') as f:
+            reader = csvlib.DictReader(f)
+            rows = list(reader)
 
-    plt.figure(figsize=(5, 4))
-    plt.contourf(x, y, Z, levels=15, cmap='Blues')
-    plt.colorbar(label='Posterior density (normalized)')
-    plt.xlabel('East offset (km)')
-    plt.ylabel('North offset (km)')
-    plt.title('Posterior Heatmap Placeholder — Synthetic Diagnostic')
-    plt.plot(2, 1, 'r*', markersize=12, label='Peak', alpha=0.7)
-    plt.legend(fontsize=8)
-    plt.tight_layout()
-    plt.savefig(out)
-    plt.close()
-    print(f"  posterior_heatmap_placeholder.pdf (toy)")
+        e_coords = sorted(set(float(r['e_m']) for r in rows))
+        n_coords = sorted(set(float(r['n_m']) for r in rows))
+        e_grid = np.array(e_coords)
+        n_grid = np.array(n_coords)
+        NE = len(e_coords)
+        NN = len(n_coords)
+
+        posterior_2d = np.zeros((NE, NN))
+        hpd_2d = np.zeros((NE, NN), dtype=bool)
+        for r in rows:
+            i = e_coords.index(float(r['e_m']))
+            j = n_coords.index(float(r['n_m']))
+            posterior_2d[i, j] = float(r['posterior_prob'])
+            hpd_2d[i, j] = r['in_hpd'] == 'True'
+
+        pmax = posterior_2d.max()
+
+        plt.figure(figsize=(10, 4))
+        plt.subplot(1, 2, 1)
+        plt.pcolormesh(e_grid, n_grid, posterior_2d.T, cmap='YlOrRd', shading='auto')
+        plt.colorbar(label='P(x_k | y)')
+        plt.xlabel('Easting offset (m)')
+        plt.ylabel('Northing offset (m)')
+        plt.title('Posterior probability (synthetic diagnostic)')
+        plt.axis('equal')
+
+        plt.subplot(1, 2, 2)
+        log_p = np.log(posterior_2d.T + 1e-12)
+        plt.pcolormesh(e_grid, n_grid, log_p, cmap='viridis', shading='auto')
+        plt.colorbar(label='log P(x_k | y)')
+        plt.xlabel('Easting offset (m)')
+        plt.ylabel('Northing offset (m)')
+        plt.title('Log-posterior score (synthetic diagnostic)')
+        plt.axis('equal')
+
+        plt.tight_layout()
+        plt.savefig(out)
+        plt.close()
+        print(f"  posterior_heatmap_diagnostic.pdf (real synthetic diagnostic)")
+    else:
+        # Fall back to toy Gaussian placeholder
+        n = 31
+        x = np.linspace(-15, 15, n)
+        y = np.linspace(-15, 15, n)
+        X, Y = np.meshgrid(x, y)
+        # Peak at (2, 1) km, broad spread
+        Z = np.exp(-((X - 2)**2 / 20 + (Y - 1)**2 / 15))
+
+        plt.figure(figsize=(5, 4))
+        plt.contourf(x, y, Z, levels=15, cmap='Blues')
+        plt.colorbar(label='Posterior density (normalized)')
+        plt.xlabel('East offset (km)')
+        plt.ylabel('North offset (km)')
+        plt.title('Posterior Heatmap Placeholder — Synthetic Diagnostic')
+        plt.plot(2, 1, 'r*', markersize=12, label='Peak', alpha=0.7)
+        plt.legend(fontsize=8)
+        plt.tight_layout()
+        plt.savefig(out_placeholder)
+        plt.close()
+        out = out_placeholder
+        print(f"  posterior_heatmap_placeholder.pdf (toy fallback)")
 
 
 # --------------------------------------------------------------------------- #

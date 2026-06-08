@@ -70,9 +70,12 @@ Key preliminary observations from synthetic runs:
 Preliminary synthetic diagnostic figures are produced by
 \texttt{make\\_paper\\_figures.py} and are reproduced from the evaluation
 scripts above.  All figures are labeled as synthetic diagnostics.
-The posterior heatmap figure (\texttt{posterior\\_heatmap\\_placeholder.pdf})
-is a deterministic toy Gaussian used as a conceptual placeholder; it is not
-derived from the estimator output in this draft.
+The posterior heatmap figure (\texttt{posterior\_heatmap\_diagnostic.pdf})
+is produced by \texttt{export\_posterior\_diagnostic.py} from the grid posterior
+on a deterministic synthetic scenario; it reflects genuine estimator output
+with nuisance marginalization.  A toy Gaussian fallback
+(\texttt{posterior\_heatmap\_placeholder.pdf}) is used if the diagnostic is
+not available.  All results are preliminary synthetic diagnostics.
 
 \begin{figure}[tb]
   \centering
