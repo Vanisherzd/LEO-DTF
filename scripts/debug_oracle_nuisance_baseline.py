@@ -42,8 +42,10 @@ def main():
 
     ref_ecef = np.array(geodetic_to_ecef(LAT0_DEG, LON0_DEG, ALT0_KM))
     lat_r, lon_r = np.radians(LAT0_DEG), np.radians(LON0_DEG)
-    slat, clat = np.sin(lat_r), np.cos(lon_r)
-    slon, clon = np.sin(lon_r), np.cos(lon_r)
+    slat = np.sin(lat_r)
+    clat = np.cos(lat_r)
+    slon = np.sin(lon_r)
+    clon = np.cos(lon_r)
     enu_basis = np.column_stack([
         np.array([-slon, clon, 0.0]),
         np.array([-slat*clon, -slat*slon, clat]),
