@@ -12,11 +12,11 @@ repository state.}
 \subsection{Hardware Roles}
 
 \begin{itemize}
-  \item \textbf{LR1121/STM32 packet source}: The Semtech LR1121 transceiver%~\cite{todo_lr1121}
-        is configured in transmit-only mode (LR-FHSS or LoRa%~\cite{todo_lora_phy})
+\item \textbf{LR1121/STM32 packet source}: The Semtech LR1121 transceiver~\cite{semtech_lr1121_datasheet}
+        is configured in transmit-only mode (LR-FHSS or LoRa~\cite{semtech_lr_fhss_phy})
         using an STM32 host microcontroller.  The LR1121 does \emph{not} receive; it serves
         solely as a characterizable packet waveform source with known timing.
-  \item \textbf{USRP B210}%~\cite{todo_usrp_b210}: A Software-Defined Radio (SDR) front-end captures
+  \item \textbf{USRP B210}~\cite{ettus_usrp_b210}: A Software-Defined Radio (SDR) front-end captures
         complex baseband IQ samples at a configurable sample rate
         (recommended 1--10~MS/s).  The USRP acts as a wideband receiver to
         capture the transmitted packets.

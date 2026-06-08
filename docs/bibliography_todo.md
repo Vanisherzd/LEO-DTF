@@ -1,102 +1,108 @@
 # Bibliography TODO
 
-This file lists all placeholder citation keys in `paper/refs.bib` and what real references they should be replaced with. **Do not fabricate citation details.** Verify each replacement before inserting.
+This document tracks placeholder citation replacements in `paper/refs.bib`.
+**Do not fabricate citation details.** Entries marked [VERIFY] need additional
+verification before final submission.
 
 ---
 
-## `todo_ntn_iot`
+## Status: Phase 33 Complete — Citation Replacement Pass
 
-**Used in:** Section 1 (Introduction), Section 2 (Background)
-**Needed:** Survey or 3GPP specification on direct-to-satellite IoT and NTN architectures
-**Suggested search:** `3GPP NTN IoT Rel-18 non-terrestrial network direct-to-device survey`
-**Suggested source:** 3GPP TR 38.821, or IEEE ComMag article on NTN for IoT
+The following `todo_*` placeholders have been replaced with real citation keys.
+Not all replacements are fully verified; see individual entries below.
 
 ---
 
-## `todo_sgp4`
+## Replaced `todo_*` Entries
 
-**Used in:** Section 3 (System Model)
-**Needed:** Reference to SGP4 orbit propagator (Vallado, etc.)
-**Suggested search:** `Vallado sgp4 orbit determination 2005 fundamentals of astrodynamics`
-**Note:** The original SGP4 reference is Vallado and Crawford (2008), but Vallado (2005) "Fundamentals of Astrodynamics and Applications" is the standard textbook reference. Use the verified published DOI.
-
----
-
-## `todo_doppler_localization`
-
-**Used in:** Section 2 (Background)
-**Needed:** Prior work on LEO Doppler-based geolocation
-**Suggested search:** `doppler-based localization LEO satellite positioning`
-**Note:** The placeholder author "Kannan, B. B. and Shea, J. M." was not verified. Find the real authors of relevant papers in this space.
+| Old Key | New Key(s) | Status |
+|---------|-----------|--------|
+| `todo_ntn_iot` | `kodheli_nb_iot_2021` | Partially verified [VERIFY] |
+| `todo_sgp4` | `vallado_spacetrack_2006` | Verified (arXiv/cited paper) |
+| `todo_doppler_localization` | `liu_geometric_2026` | Verified (arXiv:2603.19499) |
+| `todo_doppler_positioning` | `liu_geometric_2026`, `dureppagari_leo_2024` | Verified |
+| `todo_oscillator_nuisance` | `ettefagh_integrated_2025` | Verified (arXiv:2509.18727) |
+| `todo_ntn_positioning` | `dureppagari_leo_2024` | Verified (arXiv:2410.18301) |
+| `todo_lr1121` | `semtech_lr1121_datasheet` | [VERIFY] URL/year not confirmed |
+| `todo_lora_phy` | `semtech_lr_fhss_phy` | [VERIFY] URL/year not confirmed |
+| `todo_usrp_b210` | `ettus_usrp_b210` | [VERIFY] URL/year not confirmed |
 
 ---
 
-## `todo_doppler_positioning`
+## Entries Still Needing Verification
 
-**Used in:** Section 2 (Doppler-Aided Localization)
-**Needed:** Survey or review of LEO Doppler positioning approaches
-**Suggested search:** `doppler positioning LEO satellite survey`
-**Note:** Same unverified author pair as above. Replace with a real survey paper.
+### `kodheli_nb_iot_2021` — [VERIFY]
+- **Used in:** Section 1 (Introduction), Section 2 (Background)
+- **Issue:** Full author list not confirmed from search; arXiv search returned
+  O. Kodheli, N. Maturo, S. Chatzinotas only
+- **Needed:** Confirm full author list, journal volume/pages from IEEE Access
+- **Action:** Access IEEE Xplore or CrossRef to verify author list
 
----
+### `semtech_lr1121_datasheet` — [VERIFY]
+- **Used in:** Section 6 (HIL Plan)
+- **Issue:** URL and year need verification via semtech.com
+- **Needed:** Confirm current year and exact URL
 
-## `todo_oscillator_nuisance`
+### `semtech_lr_fhss_phy` — [VERIFY]
+- **Used in:** Section 6 (HIL Plan)
+- **Issue:** AN1200.22 URL and year need verification
+- **Needed:** Confirm URL and publication year
 
-**Used in:** Section 2, Section 3
-**Needed:** Paper on CFO/drift modeling for low-cost IoT oscillators in LEO SATCOM
-**Suggested search:** `carrier frequency offset oscillator drift LEO satellite IoT synchronization`
-**Note:** The placeholder "Cao, C. and McNeil, M. and G. P. Ascheid" (with typo in Ascheid) was fabricated. Find real authors.
+### `ettus_usrp_b210` — [VERIFY]
+- **Used in:** Section 6 (HIL Plan)
+- **Issue:** URL and year need verification via ettus.com or NI.com
+- **Needed:** Confirm current product page URL
 
----
+### `3gpp_tr_38821` — [VERIFY]
+- **Used in:** Not currently cited in text (background reference)
+- **Issue:** URL needs confirmation and accessed date
 
-## `todo_ntn_positioning`
+### `3gpp_tr_38811` — [VERIFY]
+- **Used in:** Not currently cited in text (background reference)
+- **Issue:** URL needs confirmation and accessed date
 
-**Used in:** Section 2 (Doppler-Aided Localization)
-**Needed:** NTN positioning from 5G New Radio perspective
-**Suggested search:** `3GPP NTN positioning 5G NR LEO satellite`
-**Suggested source:** 3GPP TR 38.811 (NTN study), or Lin et al. (IEEE Access, 2022) on NTN positioning
+### `vallado_fundamentals_2001` — [VERIFY]
+- **Used in:** Not currently cited in text (textbook reference)
+- **Issue:** Publisher and edition details need confirmation
 
----
+### `karthik_clock_2018` — [VERIFY]
+- **Used in:** Not currently cited in text
+- **Issue:** Journal volume/pages from IEEE Xplore (blocked at time of search)
+  May not be the best fit for low-cost LEO oscillator modeling
 
-## `todo_lr1121`
-
-**Used in:** Section 6 (HIL Plan), docs/hardware/
-**Needed:** Semtech LR1121 datasheet or product brief
-**Suggested search:** `Semtech LR1121 transceiver datasheet`
-**Suggested source:** semtech.com LNDR (official datasheet), last verified 2024
-**Note:** Verify the URL and publication date before using.
-
----
-
-## `todo_lora_phy`
-
-**Used in:** Section 6 (HIL Plan), docs/hardware/
-**Needed:** LoRa and LR-FHSS physical layer specification
-**Suggested search:** `LoRaWAN physical layer LR-FHSS Semtech specification`
-**Note:** The placeholder used "Sornin, N. et al." which is the LoRaWAN authors. Verify if the specific paper is the right reference (it may be the LoRaWAN 1.0 spec from 2015).
-
----
-
-## `todo_usrp_b210`
-
-**Used in:** Section 6 (HIL Plan), docs/hardware/
-**Needed:** USRP B210 product reference
-**Suggested search:** `Ettus USRP B210 product overview`
-**Suggested source:** ettus.com or NI.com product page
-**Note:** Verify year of current product page.
+### `song_certifiably_2025` — [VERIFY]
+- **Used in:** Not currently cited in text
+- **Issue:** Journal/venue not confirmed (only arXiv:2503.11200 seen)
 
 ---
 
-## How to Replace
+## Verified Entries (No [VERIFY] tag)
 
-1. Search for the real reference using the queries above.
-2. Obtain the verified: author names, title, year, journal/URL, DOI.
-3. In `paper/refs.bib`, replace the `todo_*` entry with the verified `@misc` or `@article` entry.
-4. In the manuscript, keep `\cite{todo_xxx}` keys as-is (they map to the same key in `refs.bib`).
-5. Remove the `note` field before final submission.
+| Key | Why Verified |
+|-----|-------------|
+| `liu_geometric_2026` | arXiv:2603.19499 — Title, authors, year confirmed via arXiv API |
+| `dureppagari_leo_2024` | arXiv:2410.18301 — Accepted for IEEE Communications Magazine; authors confirmed |
+| `ettefagh_integrated_2025` | arXiv:2509.18727 — Authors confirmed via arXiv API; focuses on LEO positioning with clock/frequency offsets |
+| `vallado_spacetrack_2006` | AIAA 2006-6753 — Canonical SGP4 reference; widely cited |
+| `semtech_lr1121_datasheet` | **Needs URL/year verification** |
+| `semtech_lr_fhss_phy` | **Needs URL/year verification** |
+| `ettus_usrp_b210` | **Needs URL/year verification** |
 
-## Important
+---
+
+## Remaining Work
+
+1. **[High]** Confirm `kodheli_nb_iot_2021` full author list via CrossRef or IEEE Xplore
+2. **[High]** Verify `semtech_lr1121_datasheet`, `semtech_lr_fhss_phy`, `ettus_usrp_b210` URL/year
+3. **[Medium]** Add `3gpp_tr_38811` or `3gpp_tr_38821` citation to NTN background section if appropriate
+4. **[Medium]** Decide whether to cite `vallado_fundamentals_2001` textbook in system model
+5. **[Low]** Remove or relocate orphaned entries (`karthik_clock_2018`, `song_certifiably_2025`)
+   if they are not needed for the manuscript
+
+---
+
+## Key Rules
 
 - **Never fabricate author names, titles, or years.**
-- **Use only references you can verify through a DOI, official URL, or published DOI.**
-- **"Kannan, B. B. and Shea, J. M." and "Cao, C. and McNeil, M. and G. P. Ascheid" were not verified — treat these as unknown and do not reuse them.**
+- **Entries marked [VERIFY] must be confirmed before final submission.**
+- **Do not replace these notes until every [VERIFY] item is resolved.**

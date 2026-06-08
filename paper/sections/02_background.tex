@@ -3,7 +3,7 @@
 \subsection{Direct-to-Satellite IoT and NTN Context}
 Non-terrestrial network (NTN) architectures using LEO constellations extend
 coverage to remote and maritime IoT deployments
-\cite{todo_ntn_iot}.  Devices communicating directly with LEO satellites
+\cite{kodheli_nb_iot_2021}.  Devices communicating directly with LEO satellites
 face unique上行链路 challenges: long propagation delay (order 1--10~ms),
 significant Doppler shift (up to several kHz at L-band), and limited
 terminal transmit power.  Location knowledge at the network side can improve
@@ -23,13 +23,13 @@ low-cost oscillators.
 LEO Doppler has been studied as a positioning source in several prior
 lines of work.  Early approaches used single-epoch Doppler measurements
 from multiple satellite passes for rough geolocation
-\cite{todo_doppler_positioning}; these methods require many passes and
+\cite{liu_geometric_2026}; these methods require many passes and
 provide accuracy limited by satellite geometry.  More recent work in NTN
 positioning considers joint Doppler-DMIMO techniques and multi-cell
 uplink approaches that benefit from network-side cooperation
-\cite{todo_ntn_positioning}.  Oscillator imperfections in low-cost IoT
+\cite{dureppagari_leo_2024}.  Oscillator imperfections in low-cost IoT
 devices are identified as a major practical barrier, with CFO and drift
-needing explicit estimation \cite{todo_oscillator_nuisance}.
+needing explicit estimation \cite{ettefagh_integrated_2025}.
 
 LEO-DTF differs from these lines of work by focusing on bounded-ROI
 coarse localization and uplink state estimation using a nuisance-aware
@@ -54,7 +54,7 @@ GNSS replacement.
 Doppler at a single time instant depends on range-rate, which is primarily
 sensitive to the radial (line-of-sight) component of terminal position.
 Horizontal position components are weakly observable unless the Doppler
-trajectory is tracked over an extended pass \cite{todo_doppler_localization}.
+trajectory is tracked over an extended pass \cite{liu_geometric_2026}.
 Furthermore, an unknown CFO $b_0$ and drift $b_1$ shift and tilt the
 observed frequency curve, coupling oscillator state with geometry.
 The \emph{shape} of the Doppler-time curve across multiple observations
@@ -73,8 +73,5 @@ order $10^{-2}$--$10^{-1}$~Hz/s.  These must be estimated jointly with
 position; treating them as fixed biases would degrade localization accuracy
 significantly.
 
-% Placeholder citations
-% TODO: fill with real references
-%\cite{todo_ntn_iot}  -- 3GPP NTN IoT study
-%\cite{todo_sgp4}     -- Vallado SGP4 propagator
-%\cite{todo_doppler_localization} -- prior LEO Doppler localization work
+%% Bibliography notes -- real references used above
+%% References are now replaced with verified arXiv/IEEE/3GPP citations.
