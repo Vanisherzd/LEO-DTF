@@ -67,6 +67,37 @@ Key preliminary observations from synthetic runs:
 
 \input{tables/ablation_summary.tex}
 
+Preliminary synthetic diagnostic figures are produced by
+\texttt{make\\_paper\\_figures.py} and are reproduced from the evaluation
+scripts above.  All figures are labeled as synthetic diagnostics.
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.85\linewidth]{figures/dtf_concept.pdf}
+  \caption{Doppler-time fingerprint concept.  Three candidate
+    Doppler-time curves from synthetic observations illustrating
+    geometric discriminability across the pass.  Synthetic diagnostic only.}
+  \label{fig:dtf-concept}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/ablation_summary.pdf}
+  \caption{Ablation study: posterior entropy and 95\% HPD region size
+    across progressively more complex observation models.  See
+    Table~\ref{tab:ablation-summary} for numerical values.
+    Preliminary synthetic diagnostic.}
+  \label{fig:ablation-summary}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.7\linewidth]{figures/crlb_sensitivity.pdf}
+  \caption{CRLB RMSE lower bound versus observation noise level.
+    Preliminary synthetic diagnostic.}
+  \label{fig:crlb-sensitivity}
+\end{figure}
+
 \subsection{Trace-driven HIL Plan}
 Section~\ref{sec:hil} describes the hardware-in-the-loop validation design
 in detail.  No HIL runs have been executed; no real IQ captures are used in
