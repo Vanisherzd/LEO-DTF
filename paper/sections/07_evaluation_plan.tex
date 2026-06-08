@@ -98,9 +98,21 @@ not available.  All results are preliminary synthetic diagnostics.
 
 \begin{figure}[tb]
   \centering
+  \includegraphics[width=0.7\linewidth]{figures/posterior_heatmap_diagnostic.pdf}
+  \caption{Posterior heatmap diagnostic generated from a deterministic synthetic estimator
+    scenario.  The figure illustrates the grid posterior structure under controlled
+    synthetic observations; it is not a real satellite, HIL, or OTA result and should not
+    be read as a final performance claim.}
+  \label{fig:posterior-diagnostic}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
   \includegraphics[width=0.7\linewidth]{figures/crlb_sensitivity.pdf}
   \caption{CRLB RMSE lower bound versus observation noise level.
-    Preliminary synthetic diagnostic.}
+    Preliminary synthetic diagnostic only; this bound is not directly
+    comparable to MAP error because the MAP estimator uses nuisance
+    priors and regularization.}
   \label{fig:crlb-sensitivity}
 \end{figure}
 
@@ -118,6 +130,7 @@ claims.
 \subsection{Reproduction Commands}
 To regenerate all artifacts (all commands are deterministic with seed=42 for ablation):
 \begin{verbatim}
+python scripts/export_posterior_diagnostic.py
 python scripts/generate_synthetic_dataset.py
 python scripts/run_monte_carlo_synthetic.py --trials 5
 python scripts/diagnose_crlb_sensitivity.py
