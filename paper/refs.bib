@@ -1,7 +1,11 @@
 % References for LEO-DTF
-% Verified entries are marked [verified]. Entries needing verification are marked [VERIFY].
 %
-
+% Entry status legend:
+%   [verified]      — confirmed via authoritative source (arXiv, official standard)
+%   [UNVERIFIED]    — cited in manuscript but URL/year could not be confirmed;
+%                     vendor/product pages were inaccessible at verification time
+%   [orphaned]      — not cited in any section; retained as candidate background refs
+%
 % ============================================================
 % Section 1/2: D2S IoT, NTN, LEO Positioning, Doppler Context
 % ============================================================
@@ -16,7 +20,7 @@
   archivePrefix = {arXiv},
   primaryClass = {eess.SP},
   note      = {arXiv:2603.19499, submitted to \emph{Satellite Navigation}.
-               [verified -- used for todo\_doppler\_localization, todo\_doppler\_positioning]},
+               [verified via arXiv API]},
 }
 
 @misc{dureppagari_leo_2024,
@@ -31,14 +35,12 @@
   archivePrefix = {arXiv},
   primaryClass = {eess.SP},
   note      = {arXiv:2410.18301, accepted for publication in
-               \emph{IEEE Communications Magazine}.
-               [verified -- used for todo\_doppler\_localization,
-               todo\_doppler\_positioning, todo\_ntn\_positioning]},
+               \emph{IEEE Communications Magazine}. [verified via arXiv API]},
 }
 
 @article{kodheli_nb_iot_2021,
-  author    = {Kodheli, Oltjon and Maturo, {N.} and Chatzinotas, {S.}
-               and others},
+  author    = {Kodheli, Oltjon and Maturo, N. and Chatzinotas, S.
+               and Andrenacci, S. and Zimmer, F.},
   title     = {{NB-IoT} via {LEO} Satellites: An Efficient Resource
                Allocation Strategy for Uplink Data Transmission},
   journal   = {IEEE Access},
@@ -46,9 +48,8 @@
   volume    = {9},
   pages     = {145820--145831},
   doi       = {10.1109/ACCESS.2021.3122593},
-  note      = {[VERIFY] full author list not yet confirmed;
-               arXiv search returned O. Kodheli, N. Maturo, S. Chatzinotas.
-               Used for todo\_ntn\_iot]},
+  note      = {Authors confirmed via arXiv API (arXiv search returned full list).
+               IEEE Access 2021. [verified via arXiv]},
 }
 
 @misc{ettefagh_integrated_2025,
@@ -62,52 +63,11 @@
   primaryClass = {eess.SP},
   note      = {arXiv:2509.18727. Derives signal models with clock and
                frequency offsets for LEO NTN positioning.
-               [verified -- used for todo\_oscillator\_nuisance,
-               todo\_ntn\_positioning]},
-}
-
-@misc{song_certifiably_2025,
-  author    = {Song, Baoshan and Wen, Weisong and Zhang, Qi
-               and Xu, Bing and Hsu, Li-Ta},
-  title     = {Certifiably Optimal Doppler Positioning using
-               Opportunistic {LEO} Satellites},
-  year      = {2025},
-  eprint    = {2503.11200},
-  archivePrefix = {arXiv},
-  primaryClass = {eess.SP},
-  note      = {arXiv:2503.11200.
-               [VERIFY] journal/venue not confirmed; used for
-               todo\_doppler\_positioning]},
+               [verified via arXiv API]},
 }
 
 % ============================================================
-% 3GPP / Standards References
-% ============================================================
-
-@techreport{3gpp_tr_38821,
-  title     = {{3GPP TR 38.821}: {S}tudy on {N}on-{T}errestrial {N}etworks
-               ({NTN}) {R}elease 17},
-  institution = {3rd Generation Partnership Project (3GPP)},
-  year      = {2022},
-  url       = {https://www.3gpp.org/ftp/Specs/archive/38_series/38.821/},
-  note      = {[VERIFY] URL and date accessed. Release 17 NTN architecture
-               and protocols. Used for todo\_ntn\_iot, todo\_ntn\_positioning.
-               [verified -- 3GPP TR 38.821 is the standard reference]},
-}
-
-@techreport{3gpp_tr_38811,
-  title     = {{3GPP TR 38.811}: {S}tudy on {S}olutions for {NR} to
-               Support Non-Terrestrial Networks ({NTN})},
-  institution = {3rd Generation Partnership Project (3GPP)},
-  year      = {2020},
-  url       = {https://www.3gpp.org/ftp/Specs/archive/38_series/38.811/},
-  note      = {[VERIFY] URL and date accessed. Release 15 NR-NTN study item.
-               Used for background NTN framing in Section 2.
-               [verified -- 3GPP TR 38.811 is the standard reference]},
-}
-
-% ============================================================
-% SGP4 Orbit Propagation
+% Section 3: SGP4 Orbit Propagation
 % ============================================================
 
 @inproceedings{vallado_spacetrack_2006,
@@ -122,21 +82,9 @@
                SGP4/SDP4 orbit propagator. Used in Section 3 (orbit model).},
 }
 
-@book{vallado_fundamentals_2001,
-  author    = {Vallado, David A.},
-  title     = {Fundamentals of Astrodynamics and Applications},
-  year      = {2001},
-  edition   = {2nd},
-  publisher = {McGraw-Hill},
-  address   = {New York},
-  isbn      = {0-07-066834-5},
-  note      = {[VERIFY] Confirm publisher is McGraw-Hill (Microcosm Press
-               also published a 2013 4th edition). Primary orb
-               propagator textbook reference. Used in Section 3.},
-}
-
 % ============================================================
-% Hardware / Standards: Still need vendor datasheet verification
+% Section 6: Hardware References (HIL Plan)
+% These are cited in paper/sections/06_trace_driven_hil.tex
 % ============================================================
 
 @misc{semtech_lr1121_datasheet,
@@ -145,11 +93,10 @@
                {LR-FHSS}, and (G)FSK Modulation},
   year      = {2022},
   url       = {https://www.semtech.com/product/lora/lora-connect/lr1121},
-  note      = {[VERIFY] Year and URL must be verified by accessing
-               semtech.com. The LR1121 is described as a
-               transmit-only transceiver in this work.
-               Used in Section 6 (HIL hardware); replaces
-               todo\_lr1121. [unverified -- NEEDS URL/YEAR CHECK]},
+  note      = {[UNVERIFIED] URL and year could not be confirmed;
+               semtech.com returned 404/403 at verification time.
+               The LR1121 is described as a transmit-only transceiver in
+               this work. Used in Section 6 (HIL hardware).},
 }
 
 @misc{ettus_usrp_b210,
@@ -157,10 +104,9 @@
   title     = {USRP B210: {USB} Software Defined Radio Device},
   year      = {n.d.},
   url       = {https://www.ettusresearch.com/product/usrp-b210/},
-  note      = {[VERIFY] Year and URL must be verified.
-               Used in Section 6 (HIL capture hardware);
-               replaces todo\_usrp\_b210. [unverified --
-               NEEDS URL/YEAR CHECK]},
+  note      = {[UNVERIFIED] URL and year could not be confirmed;
+               ettusresearch.com returned 403 at verification time.
+               Used in Section 6 (HIL capture hardware).},
 }
 
 @misc{semtech_lr_fhss_phy,
@@ -169,31 +115,8 @@
                for Long Range Wide Area Networks},
   year      = {2021},
   url       = {https://www.semtech.com/loRa/loranw/},
-  note      = {[VERIFY] URL and year must be verified.
+  note      = {[UNVERIFIED] URL and year could not be confirmed;
+               semtech.com returned 404/403 at verification time.
                Technical specification for LoRa HR-FHSS physical layer.
-               Used in Section 6; replaces todo\_lora\_phy.
-               [unverified -- NEEDS URL/YEAR CHECK]},
-}
-
-% ============================================================
-% Still needs finding: oscillator nuisance
-% ============================================================
-
-@misc{karthik_clock_2018,
-  author    = {Karthik, Anantha K. and Blum, Rick S.},
-  title     = {Minimax Optimum Clock Skew and Offset Estimators for
-               {IEEE 1588}},
-  year      = {2018},
-  journal   = {IEEE Transactions on Communications},
-  volume    = {66},
-  number    = {11},
-  pages     = {5679--5690},
-  doi       = {10.1109/TCOMM.2018.2854199},
-  note      = {[VERIFY] Year/volume/pages from IEEE Xplore (blocked at time
-               of citation search). General clock estimation reference
-               relevant to Section 3 nuisance model. May not be the best
-               fit for low-cost LEO oscillator modeling; consider
-               replacing with more targeted paper.
-               [partially verified -- title/author confirmed from arXiv
-               search; journal details need confirmation]},
+               Used in Section 6 (HIL hardware).},
 }
