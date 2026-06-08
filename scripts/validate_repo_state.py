@@ -103,11 +103,22 @@ def run_quick_checks():
         "scripts/make_paper_figures.py",
         "scripts/run_smoke_test.py",
         "scripts/validate_repo_state.py",
+        "scripts/check_paper_sanity.py",
     ]
     ok &= check_scriptsExist(required_scripts)
 
     print("Checking conservative phrases...")
     ok &= check_conservativePhrases()
+
+    print("Checking paper LaTeX structure...")
+    rc, out, err = run_script("check_paper_sanity.py", timeout=30)
+    status = PASS if rc == 0 else f"{FAIL} (rc={rc})"
+    print(f"  {status} check_paper_sanity.py")
+    if rc != 0:
+        ok = False
+        # Print first few lines of output for debugging
+        for line in out.splitlines()[:5]:
+            print(f"    {line}")
 
     return ok
 
