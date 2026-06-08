@@ -41,6 +41,7 @@ time offset within a bounded region of interest (ROI).
 |----------|---------|
 | `docs/claim_audit_report.md` | Claim safety audit: allowed/prohibited claims, high-risk sections, manual review checklist |
 | `docs/bibliography_todo.md` | Tracks unverified placeholder citations in paper/refs.bib |
+| `docs/submission_readiness_matrix.md` | Submission readiness: blocking items, remaining work, pre-submission checklist |
 
 ## Project Structure
 
