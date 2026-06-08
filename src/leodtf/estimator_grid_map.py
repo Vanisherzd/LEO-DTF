@@ -166,8 +166,8 @@ def score_candidate(position_en, delta_t, ground_station_ecef, enu_basis,
     if N == 0:
         return np.inf, 0.0, 0.0
 
-    # Convert EN position to ECEF offset
-    position_ecef_offset = enu_basis @ np.append(position_en, 0.0)  # Only EN, no up
+    # Convert EN position to ECEF offset (position_en is in meters, ECEF is in km)
+    position_ecef_offset = enu_basis @ np.append(position_en / 1000.0, 0.0)  # Only EN, no up
     ground_station_ecef = np.array(ground_station_ecef)
     candidate_ground_ecef = ground_station_ecef + position_ecef_offset
 
