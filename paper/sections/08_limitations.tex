@@ -55,9 +55,36 @@
         captures; it does not involve real satellite links.  Validating the
         full signal-processing pipeline from real captures remains future work.
 
-  \item \textbf{LoRa / LR-FHSS feature extractors are stubs.}
-        \texttt{src/leodtf/feature\_extract\_lora.py} and
-        \texttt{src/leodtf/feature\_extract\_lrfhss.py} are placeholders.  Real
+\item \textbf{LoRa / LR-FHSS feature extractors are stubs.}
+        \texttt{src/leodtf/feature\\_extract\\_lora.py} and
+        \texttt{src/leodtf/feature\\_extract\\_lrfhss.py} are placeholders.  Real
         extraction algorithms for packet timing and frequency from LoRa and
         LR-FHSS waveforms are left to future HIL implementation.
+
+  \item \textbf{Current results are synthetic diagnostics, not operational
+        validation.}  All numerical results in this manuscript were produced
+        from synthetic passes, Monte Carlo draws with injected noise, and
+        analytical CRLB expressions.  They establish the qualitative behavior
+        of the estimator under controlled conditions and should not be
+        interpreted as field performance.
+
+  \item \textbf{Toy posterior heatmap is not from estimator output.}
+        The posterior heatmap placeholder figure
+        (\texttt{posterior\\_heatmap\\_placeholder.pdf}) is a deterministic
+        Gaussian toy used for conceptual illustration.  It is not derived
+        from the estimator and should not be read as an actual posterior
+        from the grid estimator.
+
+  \item \textbf{TLE and SGP4 model errors not fully characterized.}
+        The SGP4 propagator and TLE data introduce errors in satellite
+        ephemeris that are not explicitly modeled in the current CRLB or
+        posterior.  Unmodeled ephemeris errors can bias position estimates
+        in real-pass scenarios.
+
+  \item \textbf{Atmospheric, multipath, and oscillator nonlinear effects
+        not modeled.}  Ionospheric and tropospheric delay, terminal antenna
+        multipath, and oscillator phase noise or frequency jumps are not
+        included in the current observation model.  These effects are
+        expected to degrade real-world performance relative to the
+        synthetic diagnostics presented here.
 \end{enumerate}

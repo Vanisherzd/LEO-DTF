@@ -21,6 +21,7 @@ import os
 import csv
 import json
 import argparse
+import zlib
 import numpy as np
 from datetime import datetime, timedelta
 
@@ -264,11 +265,14 @@ def main():
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
 
-        for case in CASES:
+        for case_idx, case in enumerate(CASES):
             name = case['name']
             print(f"  Case: {name}")
             for trial in range(1, args.trials + 1):
-                rng = np.random.default_rng(args.seed + trial + hash(name) % 1000)
+                # Stable per-case RNG: crc32 of name is deterministic across invocations
+                name_hash = zlib.crc32(name.encode()) & 0xFFFFFFFF
+                rng = np.random.default_rng(
+                    args.seed * 1009 + trial * 31 + case_idx * 17 + name_hash)
                 row = {
                     'trial': trial,
                     'case_name': name,

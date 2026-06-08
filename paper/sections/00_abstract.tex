@@ -14,14 +14,20 @@ inside a bounded region of interest (ROI).  A Bayesian grid-based posterior
 estimator jointly accounts for unknown carrier frequency offset (CFO), oscillator
 drift, and timing offset as nuisance parameters, yielding a maximum \emph{a posteriori}
 (MAP) coarse location estimate together with uplink state quantities.
+An ablation study in simulation demonstrates that multi-epoch Doppler-time
+fingerprints reduce posterior ambiguity relative to single-snapshot Doppler,
+even when nuisance parameters are present.
 
-Evaluation is currently conducted in simulation using a reproducible
-synthetic-pass pipeline, Monte Carlo diagnostics, and CRLB sensitivity
-analysis.  A trace-driven hardware-in-the-loop (HIL) validation plan is
-described using an LR1121/STM32 packet source and a USRP B210 IQ capture
-front-end.  No real satellite over-the-air validation is claimed.
-Meter-level localization accuracy and GNSS replacement are explicitly outside
-the scope of the current work.  Rather than replacing GNSS, LEO-DTF is
-intended as a complementary coarse localization and uplink state-estimation
-primitive for bounded-region D2S IoT scenarios.
+The current evaluation pipeline is entirely synthetic and trace-driven: it
+provides a deterministic synthetic-pass generator, Monte Carlo coarse-localization
+diagnostics, CRLB timestamp sensitivity analysis, a Doppler-time ambiguity
+ablation study, and automatic table and figure generation.  A trace-driven
+hardware-in-the-loop (HIL) validation plan is described using an LR1121/STM32
+packet source (transmit-only) and a USRP B210 IQ capture front-end, with
+offline Doppler/CFO/delay injection.  \textbf{No real satellite over-the-air
+validation is claimed.}  Meter-level localization accuracy and GNSS replacement
+are explicitly outside the scope of the current work.  Rather than replacing GNSS,
+LEO-DTF is intended as a complementary coarse localization and uplink state-estimation
+primitive for bounded-region D2S IoT scenarios, with current results read as
+preliminary synthetic diagnostics.
 \end{abstract}

@@ -10,16 +10,32 @@ oscillator drift from multi-observation pass data.
 
 The current repository establishes: (i) the core algorithmic pipeline from
 satellite geometry to posterior estimate; (ii) a reproducible synthetic-pass
-evaluation framework with Monte Carlo diagnostics and CRLB sensitivity analysis;
-and (iii) a trace-driven HIL validation plan describing the path from software
-simulation to hardware-in-the-loop verification without over-the-air claims.
+evaluation framework with Monte Carlo diagnostics, CRLB sensitivity analysis,
+and a Doppler-time ambiguity ablation study demonstrating the qualitative
+value of multi-epoch fingerprints; (iii) a deterministic table and figure
+generation pipeline; and (iv) a trace-driven HIL validation plan describing
+the path from software simulation to hardware-in-the-loop verification
+without over-the-air claims.
 
-The paper skeleton in this repository is a working draft.  All quantitative
-results are currently preliminary and synthetic.  Meter-level accuracy,
-real-satellite OTA validation, and operational deployment are explicitly
-outside the current scope and are not claimed.
+The manuscript is an early draft.  All quantitative results are currently
+preliminary and synthetic.  Meter-level accuracy, real-satellite OTA
+validation, and operational deployment are explicitly outside the current
+scope and are not claimed.
 
-Future work includes completing the IQ Doppler injection and feature-extraction
-pipeline, executing the HIL validation, expanding the Monte Carlo evaluation
-with 100+ trials across diverse pass geometries, and integrating the estimator
-output with NTN uplink scheduling and link adaptation subsystems.
+Future work includes:
+\begin{itemize}
+  \item Completing the IQ Doppler injection and feature-extraction pipeline
+        from LR1121/STM32 packet captures.
+  \item Executing the trace-driven HIL validation with the USRP B210 front-end.
+  \item Expanding the Monte Carlo evaluation with 100+ trials across diverse
+        pass geometries and ROI configurations, with reported confidence
+        intervals.
+  \item Validating the full pipeline against an authorized OTA pass or a
+        public D2S IoT dataset, if and when available.
+  \item Integrating the estimator output with NTN uplink scheduling and
+        link adaptation subsystems.
+\end{itemize}
+
+The repository is available at \url{https://github.com/Vanisherzd/LEO-DTF}
+for reproducibility.
+\end{section}

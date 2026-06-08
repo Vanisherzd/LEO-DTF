@@ -46,4 +46,18 @@ This paper makes the following contributions:
 
 No reinforcement-learning, PGRL, or semantic-communication framework is used.
 All results are model-driven and reproducible from the provided scripts.
+Results in this paper should be read as \textbf{preliminary synthetic diagnostics},
+not as final deployment validation or as operational field results.
+
+The remainder of this paper is organized as follows.
+Section~\ref{sec:background} provides background on D2S IoT and LEO Doppler
+dynamics.  Section~\ref{sec:system_model} describes the system model including satellite
+geometry, ROI, and terminal oscillator assumptions.  Section~\ref{sec:dtf}
+develops the Doppler-time fingerprint model.  Section~\ref{sec:estimator}
+presents the Bayesian grid posterior estimator and MAP inference.
+Section~\ref{sec:hil} describes the trace-driven HIL plan.
+Section~\ref{sec:evaluation} presents the reproducible synthetic evaluation
+pipeline and preliminary diagnostic results.  Section~\ref{sec:limitations}
+discusses the current scope and known limitations.  Section~\ref{sec:conclusion}
+concludes with a summary and future work directions.
 \end{section}

@@ -70,6 +70,9 @@ Key preliminary observations from synthetic runs:
 Preliminary synthetic diagnostic figures are produced by
 \texttt{make\\_paper\\_figures.py} and are reproduced from the evaluation
 scripts above.  All figures are labeled as synthetic diagnostics.
+The posterior heatmap figure (\texttt{posterior\\_heatmap\\_placeholder.pdf})
+is a deterministic toy Gaussian used as a conceptual placeholder; it is not
+derived from the estimator output in this draft.
 
 \begin{figure}[tb]
   \centering
@@ -110,12 +113,14 @@ claims.
 \input{tables/evaluation_summary.tex}
 
 \subsection{Reproduction Commands}
-To regenerate all artifacts:
+To regenerate all artifacts (all commands are deterministic with seed=42 for ablation):
 \begin{verbatim}
 python scripts/generate_synthetic_dataset.py
 python scripts/run_monte_carlo_synthetic.py --trials 5
 python scripts/diagnose_crlb_sensitivity.py
+python scripts/run_ambiguity_ablation.py --trials 5 --seed 42
 python scripts/summarize_evaluation.py
+python scripts/make_paper_figures.py
 \end{verbatim}
 
 \textit{All results above are preliminary and synthetic.  No localization
