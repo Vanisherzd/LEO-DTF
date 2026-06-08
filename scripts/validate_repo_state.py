@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
-PYTHON = "/opt/hermes/.venv/bin/python3"
+PYTHON = sys.executable
 PASS = "\033[92mPASS\033[0m"
 FAIL = "\033[91mFAIL\033[0m"
 

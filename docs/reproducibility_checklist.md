@@ -4,7 +4,7 @@
 
 - **Branch:** `main`
 - **Latest commit:** `194bb36` (paper: integrate preliminary results into manuscript draft)
-- **Python:** 3.x (tested with `/opt/hermes/.venv/bin/python3`)
+- **Python:** 3.x (use the active Python interpreter from the current virtual environment)
 - **Dependencies:** installed via `uv pip install -e .` from repo root
 
 ## 2. Core Scripts

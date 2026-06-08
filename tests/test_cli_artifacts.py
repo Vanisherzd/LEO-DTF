@@ -16,7 +16,7 @@ ROOT = Path(__file__).parent.parent
 SCRIPTS = ROOT / "scripts"
 
 # All scripts use the project's venv python
-PYTHON = "/opt/hermes/.venv/bin/python3"
+PYTHON = sys.executable
 
 
 def run(script_name, args=None):
