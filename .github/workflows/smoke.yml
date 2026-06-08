@@ -1,0 +1,31 @@
+name: LEO-DTF Smoke Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install pytest
+
+      - name: Run smoke test
+        run: python scripts/run_smoke_test.py
+
+      - name: Validate repository state
+        run: python scripts/validate_repo_state.py
+
+      - name: Run tests
+        run: pytest -q
