@@ -31,6 +31,7 @@ time offset within a bounded region of interest (ROI).
 | `docs/hardware/trace_driven_validation_checklist.md` | Per-run validation checklist |
 | `docs/reproducibility_checklist.md` | This checklist — script inventory, artifact locations, claim safety |
 | `docs/supervisor_review_checklist.md` | Checklist for human review before paper submission |
+| `docs/local_setup.md` | Step-by-step local setup and artifact reproduction guide |
 
 > **All HIL documents describe planned or trace-driven work. No real satellite OTA validation is claimed in this repository.**
 
