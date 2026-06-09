@@ -11,6 +11,7 @@ jobs:
     timeout-minutes: 20
     env:
       PYTHONPATH: src
+
     steps:
       - uses: actions/checkout@v4
 
@@ -18,20 +19,23 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install package and test dependencies
+      - name: Install uv
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e .
-          python -m pip install pytest
+          python -m pip install uv
+
+      - name: Install project with uv
+        run: |
+          uv sync --all-extras
 
       - name: Run smoke test
-        run: python scripts/run_smoke_test.py
+        run: uv run python scripts/run_smoke_test.py
 
-      - name: Validate repository state (fast)
-        run: python scripts/validate_repo_state.py
+      - name: Validate repository state
+        run: uv run python scripts/validate_repo_state.py
 
       - name: Check paper LaTeX sanity
-        run: python scripts/check_paper_sanity.py
+        run: uv run python scripts/check_paper_sanity.py
 
       - name: Check placeholder citations
         run: |
@@ -40,5 +44,11 @@ jobs:
             exit 1
           fi
 
-      - name: Run tests
-        run: pytest -q
+      - name: Run focused research smoke tests
+        run: |
+          uv run pytest tests/test_research_multipass_observability.py -q
+          uv run pytest tests/test_research_dtoi_derivation.py -q
+          uv run pytest tests/test_research_observability_threshold.py -q
+
+      - name: Run full tests
+        run: uv run pytest -q
