@@ -24,13 +24,13 @@ def synth_doppler_curvature(t, carrier_hz, offset_m):
     Simplified: Doppler = (carrier_hz / c) * (acceleration along line-of-sight) * t
     We use a quadratic curvature term: Doppler = k * t^2, where k depends on carrier and offset.
     This is a placeholder; the actual curvature depends on orbit geometry.
-    For simplicity, we set k = carrier_hz * offset_m * 1e-12 (arbitrary scaling).
+    For simplicity, we set k = carrier_hz * offset_m * 1e-18 (scaled to produce Hz-level Doppler).
     """
     # Speed of light
     c = 299792458.0
     # Curvature-induced Doppler acceleration (simplified)
     # This is a made-up model for synthetic study only.
-    k = carrier_hz * offset_m * 1e-12
+    k = carrier_hz * offset_m * 1e-18
     return k * t**2
 
 def nuisance_basis(t, order):
@@ -101,7 +101,12 @@ def run_experiment(nuisance_order, carrier_hz, offset_m, duration_s, seed=42):
 
     return {
         "nuisance_order": nuisance_order,
-        "nuisance_basis": f"[1{t}]" if nuisance_order == 0 else f"[1,t{t}]" if nuisance_order == 1 else f"[1,t,t^2{t}]" if nuisance_order == 2 else f"[1,t,t^2,t^3{t}]",
+        "nuisance_basis": {
+            0: "[1]",
+            1: "[1,t]",
+            2: "[1,t,t^2]",
+            3: "[1,t,t^2,t^3]"
+        }[nuisance_order],
         "carrier_hz": carrier_hz,
         "offset_m": offset_m,
         "duration_s": duration_s,
