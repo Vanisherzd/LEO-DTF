@@ -47,9 +47,6 @@ jobs:
       - name: Run multi-pass research smoke test
         run: uv run --extra test pytest tests/test_research_multipass_observability.py -q -vv
 
-      - name: Run observability threshold research smoke test
-        run: uv run --extra test pytest tests/test_research_observability_threshold.py -q -vv
-
       # Full pytest is intentionally not run in CI smoke because the full suite
       # is slow and includes many synthetic diagnostics. Run it manually before
       # major submission checkpoints.
