@@ -33,8 +33,12 @@ jobs:
       - name: Check paper LaTeX sanity
         run: python scripts/check_paper_sanity.py
 
-      - name: List placeholder citations
-        run: python scripts/list_placeholder_citations.py
+      - name: Check placeholder citations
+        run: |
+          if grep -R "todo_" paper/sections paper/refs.bib; then
+            echo "Found placeholder todo_ citations"
+            exit 1
+          fi
 
       - name: Run tests
         run: pytest -q
