@@ -63,6 +63,30 @@ def finite(x: Any) -> bool:
     return isinstance(x, (int, float)) and math.isfinite(float(x))
 
 
+def evenly_sample(items: list[Any], max_items: int | None) -> list[Any]:
+    """Select an evenly spaced deterministic subset instead of prefix truncation."""
+    if max_items is None or max_items >= len(items):
+        return items
+    if max_items <= 0:
+        return []
+    if max_items == 1:
+        return [items[0]]
+
+    idxs = []
+    for i in range(max_items):
+        idx = round(i * (len(items) - 1) / (max_items - 1))
+        idxs.append(idx)
+
+    # Deduplicate while preserving order; rounding is deterministic.
+    seen = set()
+    selected = []
+    for idx in idxs:
+        if idx not in seen:
+            seen.add(idx)
+            selected.append(items[idx])
+    return selected
+
+
 def summarize_group(trials: list[dict[str, Any]], key: str) -> dict[str, Any]:
     out: dict[str, Any] = {}
     groups = sorted({str(t[key]) for t in trials})
@@ -97,8 +121,7 @@ def main() -> None:
         for drift in drifts
         for phase in phases
     ]
-    if args.max_trials is not None:
-        combos = combos[: args.max_trials]
+    combos = evenly_sample(combos, args.max_trials)
 
     out_dir = ROOT / "experiments" / "results" / "research_oscillator_sensitivity"
     out_dir.mkdir(parents=True, exist_ok=True)

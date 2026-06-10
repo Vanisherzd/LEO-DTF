@@ -53,6 +53,9 @@ def test_oscillator_sensitivity_quick_run():
     with csv_path.open() as f:
         rows = list(csv.DictReader(f))
     assert rows
+    assert len(rows) == 12
+    assert {"100", "5000"}.issubset({row["offset_m"] for row in rows})
+    assert {"300", "1800"}.issubset({row["duration_s"] for row in rows})
     for field in [
         "base_dtoi",
         "stressed_dtoi",
