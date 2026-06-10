@@ -86,27 +86,3 @@ def test_orbit_driven_uses_offset_differential_scaling():
     # Differential Doppler should scale with offset. Noise makes exact 10x DTOI
     # unnecessary, but the 1000 m case should be clearly larger than 100 m.
     assert r1000["naive_snr"] > 5.0 * r100["naive_snr"]
-
-def test_orbit_driven_uses_offset_differential_scaling():
-    import importlib.util
-    import math
-    from pathlib import Path
-
-    spec = importlib.util.spec_from_file_location(
-        "research_orbit_trace_dtoi_bridge",
-        Path("scripts/research_orbit_trace_dtoi_bridge.py"),
-    )
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-
-    r100 = mod.run_experiment("orbit_driven_fallback", 2.4e9, 100, 600, seed=42)
-    r1000 = mod.run_experiment("orbit_driven_fallback", 2.4e9, 1000, 600, seed=42)
-
-    assert math.isclose(r100["offset_km_used"], 0.1, rel_tol=0.0, abs_tol=1e-12)
-    assert math.isclose(r1000["offset_km_used"], 1.0, rel_tol=0.0, abs_tol=1e-12)
-    assert r100["differential_mode_confirmed"] is True
-    assert r1000["differential_mode_confirmed"] is True
-
-    # Differential Doppler should scale with offset. Noise makes exact 10x DTOI
-    # unnecessary, but the 1000 m case should be clearly larger than 100 m.
-    assert r1000["naive_snr"] > 5.0 * r100["naive_snr"]
