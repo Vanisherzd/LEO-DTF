@@ -145,7 +145,7 @@ def main():
         "artifact_source": "research_orbit_trace_audit (pre-fix)",
         "metric_name": "old DTOI=507 issue",
         "value": "resolved" if old_dtoi_507_resolved else "unresolved",
-        "interpretation": "Pre-fix orbit-driven DTOI showed inflated value (~507) due to ENU basis bug; post-fix shows diagnostic DTOI ~3.04.",
+        "interpretation": "Pre-fix orbit-driven DTOI showed inflated value (~507) because the pre-C14 orbit-driven branch used absolute Doppler rather than baseline-vs-offset differential Doppler; post-fix shows diagnostic DTOI ~3.04.",
         "claim_status": "resolved" if old_dtoi_507_resolved else "unresolved"
     })
 
@@ -171,7 +171,7 @@ def main():
     ]
 
     resolved_issues = [
-        "Old DTOI=507 issue (inflated orbit-driven DTOI due to ENU basis bug) resolved via C14 fix.",
+        "Old DTOI=507 issue (inflated orbit-driven DTOI because the pre-C14 orbit-driven branch used absolute Doppler rather than baseline-vs-offset differential Doppler) resolved via C14 fix.",
         "C10A scale flags (orbit_synthetic_gap_gt_100x, dtoI_gt_100_requires_manual_unit_audit, small_offset_high_dtoi) cleared post-fix.",
         "C11 offset/carrier scaling checks pass after fix.",
         "C13 contradiction_matrix can be empty after fix, indicating consistency between audits."
