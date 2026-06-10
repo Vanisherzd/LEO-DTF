@@ -19,7 +19,7 @@ import numpy as np
 # Import LEO-DTF modules
 try:
     from leodtf.orbit_propagation import propagate_orbit, HAS_SGP4
-    from leodtf.frame_transform import geodetic_to_ecef
+    from leodtf.frame_transform import geodetic_to_ecef, enu_to_ecef
     from leodtf.observation_model import ObservationModel
 except ImportError as e:
     print(f"Error importing LEO-DTF modules: {e}")
@@ -49,7 +49,15 @@ def run_experiment(trace_source, carrier_hz, offset_m, duration_s, seed=42):
     lat0_deg = 40.0
     lon0_deg = -105.0
     alt0_km = 0.0
-    gs_ecef = geodetic_to_ecef(lat0_deg, lon0_deg, alt0_km)  # returns (x, y, z) in km
+    gs_ecef = np.asarray(geodetic_to_ecef(lat0_deg, lon0_deg, alt0_km), dtype=float)  # km
+
+    # Nearby test station displaced eastward by offset_m.
+    # geodetic_to_ecef and enu_to_ecef both use kilometers, so convert meters to km.
+    offset_km = float(offset_m) / 1000.0
+    gs_offset_ecef = np.asarray(
+        enu_to_ecef(offset_km, 0.0, 0.0, lat0_deg, lon0_deg, alt0_km),
+        dtype=float,
+    )
 
     # TLE lines (same as in smoke test)
     line1 = "1 25544U 98067A   26155.53033517  .00012622  00000+0  28098-3 0  9994"
@@ -71,14 +79,17 @@ def run_experiment(trace_source, carrier_hz, offset_m, duration_s, seed=42):
             # Fallback to synthetic curvature if orbit propagation fails
             signal = synth_doppler_curvature(t, carrier_hz, offset_m)
         else:
-            # Compute expected Doppler shift using the observation model
-            # We'll compute for each time step
+            # Compute differential Doppler between the baseline station and a nearby
+            # offset station. This keeps the orbit-driven DTOI comparable to the
+            # synthetic offset experiments and avoids using raw absolute Doppler.
             signal = np.zeros(n_samples)
-            obs_model = ObservationModel(gs_ecef, carrier_freq_hz=carrier_hz)
+            obs_base = ObservationModel(gs_ecef, carrier_freq_hz=carrier_hz)
+            obs_offset = ObservationModel(gs_offset_ecef, carrier_freq_hz=carrier_hz)
             for i in range(n_samples):
                 satellite_state = (sat_positions_ecef[i], sat_velocities_ecef[i])
-                doppler_hz, _ = obs_model.compute_expected_measurements(satellite_state, t[i])
-                signal[i] = doppler_hz
+                doppler_base_hz, _ = obs_base.compute_expected_measurements(satellite_state, t[i])
+                doppler_offset_hz, _ = obs_offset.compute_expected_measurements(satellite_state, t[i])
+                signal[i] = doppler_offset_hz - doppler_base_hz
     else:
         raise ValueError(f"Unknown trace_source: {trace_source}")
 
@@ -127,6 +138,8 @@ def run_experiment(trace_source, carrier_hz, offset_m, duration_s, seed=42):
         "dtoi": dtoi,
         "energy_removed_by_nuisance": energy_removed,
         "observability_status": status,
+        "offset_km_used": offset_km,
+        "differential_mode_confirmed": trace_source == "orbit_driven_fallback",
         "fallback_used": not HAS_SGP4  # True if SGP4 is not available (so we used synthetic orbit)
     }
 
@@ -167,7 +180,8 @@ def main():
     fieldnames = [
         "trace_source", "carrier_hz", "offset_m", "duration_s", "nuisance_order",
         "total_samples", "naive_snr", "dtoi", "energy_removed_by_nuisance",
-        "observability_status", "fallback_used"
+        "observability_status", "offset_km_used", "differential_mode_confirmed",
+        "fallback_used"
     ]
     with open(csv_path, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -189,7 +203,9 @@ def main():
                 "offset_m": best_source["offset_m"],
                 "duration_s": best_source["duration_s"],
                 "dtoi": best_source["dtoi"],
-                "observability_status": best_source["observability_status"]
+                "observability_status": best_source["observability_status"],
+                "offset_km_used": best_source["offset_km_used"],
+                "differential_mode_confirmed": best_source["differential_mode_confirmed"]
             }
     # Synthetic vs orbit-driven gap: difference in best DTOI between the two trace sources
     synth_best = best_by_trace_source.get("synthetic_curvature", {}).get("dtoi", 0.0)
@@ -202,7 +218,7 @@ def main():
             "seed": args.seed,
             "sigma_f_hz": SIGMA_F_HZ,
             "total_rows": len(results),
-            "model": "deterministic synthetic curvature DTOI diagnostic with affine nuisance projection"
+            "model": "synthetic curvature and orbit-driven differential Doppler DTOI diagnostic with affine nuisance projection"
         },
         "summary": {
             "best_config": {
@@ -215,7 +231,9 @@ def main():
                 "naive_snr": best["naive_snr"],
                 "dtoi": best["dtoi"],
                 "energy_removed_by_nuisance": best["energy_removed_by_nuisance"],
-                "observability_status": best["observability_status"]
+                "observability_status": best["observability_status"],
+                "offset_km_used": best["offset_km_used"],
+                "differential_mode_confirmed": best["differential_mode_confirmed"]
             },
             "best_by_trace_source": best_by_trace_source,
             "synthetic_vs_orbit_gap": synthetic_vs_orbit_gap,
@@ -228,7 +246,7 @@ def main():
             f"Best DTOI achieved with trace_source '{best['trace_source']}' at carrier {best['carrier_hz']/1e9:.3f} GHz, offset {best['offset_m']} m, duration {best['duration_s']} s: {best['dtoi']:.4f}.",
             f"Orbit-driven fallback uses {'real SGP4' if HAS_SGP4 else 'synthetic orbit'} propagation.",
             "Higher carrier frequency and larger offset improve DTOI for both trace sources.",
-            "The orbit-driven trace (even with fallback) provides a more realistic satellite motion than pure curvature."
+            "The orbit-driven trace now uses differential Doppler between baseline and offset ground stations."
         ],
         "conservative_notes": [
             "Orbit-driven fallback is not OTA validation (no real satellite signals are used).",
