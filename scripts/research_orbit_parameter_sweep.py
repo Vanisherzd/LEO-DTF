@@ -190,10 +190,12 @@ def main():
     ]
 
     # Recommended next action
-    if not suspicious_flags and fraction_dtoi_gt_1 > 0.5:
-        recommended_next_action = "Consider proceeding to C20 (baseline comparison) as the orbit-driven diagnostic appears robust."
-    else:
+    if suspicious_flags:
         recommended_next_action = "Investigate suspicious flags before proceeding to C20."
+    elif fraction_dtoi_gt_1 >= 0.25:
+        recommended_next_action = "Proceed to C20 baseline comparison; keep claim framing diagnostic-only."
+    else:
+        recommended_next_action = "Run the full parameter sweep or add more orbit cases before C20 baseline comparison."
 
     # Assemble the final JSON
     output_json = {
@@ -287,6 +289,10 @@ def main():
         f.write("\\n")
         f.write("## Recommended Next Action\\n\\n")
         f.write(f"{recommended_next_action}\\n")
+    md_text = md_path.read_text()
+    if "\\n" in md_text:
+        md_path.write_text(md_text.replace("\\n", "\n"))
+
     print(f"Markdown summary written to: {md_path}")
 
 if __name__ == "__main__":
