@@ -96,8 +96,18 @@ def test_roadmap_script():
         assert "overall_priority_score" in exp, f"Candidate experiment {exp.get('id', 'unknown')} missing overall_priority_score"
         assert isinstance(exp["overall_priority_score"], (int, float)), f"Overall priority score must be numeric"
     
-    # Additionally, we can check that the immediate_next_phase is either C19, C20, or C21 (as per our logic)
-    assert data["immediate_next_phase"] in ["C19", "C20", "C21"], f"Immediate next phase must be C19, C20, or C21, got {data['immediate_next_phase']}"
+    # C18 is the roadmap generator; the next executable experiment should start at C19.
+    assert data["immediate_next_phase"] == "C19", f"Immediate next phase must be C19, got {data['immediate_next_phase']}"
+
+    phase_by_id = {exp["id"]: exp["recommended_phase"] for exp in data["candidate_experiments"]}
+    assert phase_by_id["E1"] == "C19"
+    assert phase_by_id["E3"] == "C20"
+    assert phase_by_id["E2"] == "C21"
+    assert phase_by_id["E4"] == "C22"
+    assert phase_by_id["E5"] == "C23"
+    assert phase_by_id["E6"] == "deferred"
+    assert phase_by_id["E7"] == "blocked"
+    assert phase_by_id["E8"] == "deferred"
     
     # And that the top experiment in priority_ranking is either E1 or E2 (as per the task's expectation for immediate next phase)
     top_exp_id = data["priority_ranking"][0]["id"]

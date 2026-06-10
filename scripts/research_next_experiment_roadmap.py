@@ -184,22 +184,34 @@ def main():
         exp["overall_priority_score"] = round(overall, 2)
 
         # Determine recommended phase based on score and category
-        # We'll use a simple heuristic: high score -> C19, medium -> C20, low -> C21, but also consider category.
-        # However, the task says: immediate_next_phase should recommend C19 as either E1 or E2 (whichever higher).
-        # We'll set a threshold for now, but we can adjust after sorting.
-        if exp["overall_priority_score"] >= 4.0:
-            exp["recommended_phase"] = "C19"
-        elif exp["overall_priority_score"] >= 3.0:
-            exp["recommended_phase"] = "C20"
-        else:
-            exp["recommended_phase"] = "C21"
+        # Assign deterministic roadmap phases.
+    # C18 is the roadmap generator itself, so the next executable experiment
+    # should start at C19. Hardware-dependent or accuracy-claim experiments
+    # remain deferred/blocked until the required evidence path exists.
+    phase_map = {
+        "E1": "C19",
+        "E3": "C20",
+        "E2": "C21",
+        "E4": "C22",
+        "E5": "C23",
+        "E6": "deferred",
+        "E7": "blocked",
+        "E8": "deferred",
+    }
+    for exp in candidate_experiments:
+        exp["recommended_phase"] = phase_map.get(exp["id"], "deferred")
 
-    # Sort by overall_priority_score descending
-    priority_ranking = sorted(candidate_experiments, key=lambda x: x["overall_priority_score"], reverse=True)
+    # Sort by overall_priority_score descending after deterministic phase assignment.
+    priority_ranking = sorted(
+        candidate_experiments,
+        key=lambda x: x["overall_priority_score"],
+        reverse=True,
+    )
 
-    # Determine immediate next phase: the top experiment (E1 or E2) whichever has higher score.
+    # Determine immediate next phase: C18 is the roadmap generator, so the next
+    # executable experiment starts at C19.
     # Since we sorted, the first element is the highest.
-    immediate_next_phase = priority_ranking[0]["recommended_phase"] if priority_ranking else "C19"
+    immediate_next_phase = "C19"
 
     # Recommended sequence: we'll take the top 5 experiments in order for the sequence.
     recommended_sequence = [exp["id"] for exp in priority_ranking[:5]]
