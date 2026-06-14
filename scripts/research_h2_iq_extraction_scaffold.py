@@ -42,16 +42,45 @@ def scan_run_dir(run_dir: Path | None) -> dict[str, Any]:
     files = {
         "metadata.json": (run_dir / "metadata.json").exists(),
         "tx_log.csv": (run_dir / "tx_log.csv").exists(),
+        "serial_tx_log.txt": (run_dir / "serial_tx_log.txt").exists(),
         "capture_IQ.sigmf-meta": (run_dir / "capture_IQ.sigmf-meta").exists(),
         "capture_IQ.sigmf-data": (run_dir / "capture_IQ.sigmf-data").exists(),
+        "controlled_capture.sc16": (run_dir / "controlled_capture.sc16").exists(),
+        "noise_floor_capture.sc16": (run_dir / "noise_floor_capture.sc16").exists(),
     }
-    iq_present = files["capture_IQ.sigmf-meta"] and files["capture_IQ.sigmf-data"]
+    # IQ available either as a SigMF pair or a raw .sc16 capture (H1/H1C output).
+    sigmf_present = files["capture_IQ.sigmf-meta"] and files["capture_IQ.sigmf-data"]
+    sc16_present = files["controlled_capture.sc16"] or files["noise_floor_capture.sc16"]
+    iq_present = sigmf_present or sc16_present
     return {
         "run_dir": str(run_dir),
         "files_present": files,
+        "sigmf_present": sigmf_present,
+        "sc16_present": sc16_present,
         "iq_present": iq_present,
         "status": "ready_for_extraction" if iq_present else "pending_capture",
     }
+
+
+def emit_extraction_stub(run_dir: Path) -> dict[str, Any]:
+    """Write a contract-shaped (empty) extracted_observations.csv + analysis stub.
+
+    No real estimator is run yet; rows are intentionally empty until a
+    vendor/bench-reviewed extractor is implemented. Keeps claims conservative.
+    """
+    obs = run_dir / "extracted_observations.csv"
+    obs.write_text(EXTRACTED_OBS_HEADER + "\n")
+    analysis = {
+        "extraction_attempted": True,
+        "rows_written": 0,
+        "packet_detected": False,
+        "feature_extraction_complete": False,
+        "hil_validation_complete": False,
+        "hardware_validation_complete": False,
+        "note": "Extraction contract emitted; estimator not yet implemented (no rows).",
+    }
+    (run_dir / "analysis_summary.json").write_text(json.dumps(analysis, indent=2))
+    return {"emitted": True, "extracted_observations": str(obs)}
 
 
 def build_report(run_dir: Path | None) -> dict[str, Any]:
@@ -137,8 +166,13 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-dir", type=Path, default=None)
     parser.add_argument("--output-dir", type=Path, default=OUT)
+    parser.add_argument("--emit", action="store_true",
+                        help="If run-dir IQ is present, write contract-shaped extracted_observations.csv + analysis stub.")
     args = parser.parse_args()
-    write_outputs(build_report(args.run_dir), args.output_dir)
+    report = build_report(args.run_dir)
+    if args.emit and args.run_dir is not None and report["run_scan"].get("iq_present"):
+        report["emit_result"] = emit_extraction_stub(args.run_dir)
+    write_outputs(report, args.output_dir)
 
 
 if __name__ == "__main__":
