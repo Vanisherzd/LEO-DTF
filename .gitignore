@@ -12,6 +12,7 @@ src/*.egg-info/
 outputs/
 data/iq_seeds/*
 data/synthetic/*
+data/hil_runs/*
 experiments/results/*
 
 # keep folders
